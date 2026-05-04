@@ -1,0 +1,8 @@
+# Local Netlify folder
+.netlify/
+
+# macOS
+.DS_Store
+
+# Unrelated folder in this repo root
+Experiential learning*
