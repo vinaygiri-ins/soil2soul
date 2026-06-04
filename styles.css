@@ -350,7 +350,8 @@ p {
 .timeline-grid,
 .produce-grid,
 .sensor-grid,
-.faq-grid {
+.faq-grid,
+.plot-metrics {
   display: grid;
   gap: 1rem;
 }
@@ -424,6 +425,155 @@ p {
 .proof-grid {
   grid-template-columns: 1.2fr 0.8fr;
   margin-top: 2rem;
+}
+
+.land-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+.land-card,
+.plot-panel {
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 250, 241, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+}
+
+.land-overview {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.land-overview p:last-child {
+  max-width: 30rem;
+}
+
+.land-diagram {
+  margin-top: 1.5rem;
+  padding: 2rem 1rem;
+  border-radius: calc(var(--radius-xl) - 4px);
+  background:
+    linear-gradient(180deg, rgba(95, 133, 87, 0.18), rgba(62, 95, 57, 0.22)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.1) 0,
+      rgba(255, 255, 255, 0.1) 2px,
+      transparent 2px,
+      transparent 54px
+    );
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  aspect-ratio: 1 / 1;
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 1rem;
+  transform: rotate(-45deg);
+}
+
+.plot-zone {
+  min-height: 9rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 1.2rem;
+  background: rgba(254, 251, 244, 0.7);
+  color: var(--ink);
+  box-shadow: 0 12px 24px rgba(50, 44, 31, 0.12);
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.plot-zone:hover,
+.plot-zone:focus-visible {
+  transform: translateY(-2px);
+  background: rgba(255, 248, 235, 0.95);
+  border-color: rgba(141, 90, 54, 0.35);
+  outline: none;
+}
+
+.plot-zone.is-active {
+  background: linear-gradient(145deg, rgba(50, 92, 56, 0.92), rgba(126, 168, 104, 0.88));
+  color: #fff;
+}
+
+.plot-zone > span {
+  display: block;
+  transform: rotate(45deg);
+}
+
+.plot-zone-label {
+  font-family: "Fraunces", serif;
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+.plot-zone-note {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.land-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.plot-panel h3 {
+  margin-bottom: 0.35rem;
+}
+
+.plot-panel > p {
+  margin-bottom: 1.25rem;
+}
+
+.plot-metrics {
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 1.25rem;
+}
+
+.plot-metrics article,
+.plot-details > div {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.plot-metrics span,
+.plot-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--soil);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.plot-metrics strong {
+  font-family: "Fraunces", serif;
+  font-size: 1.45rem;
+}
+
+.plot-details {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.plot-details p {
+  margin: 0;
 }
 
 .traceability-box {
@@ -654,6 +804,7 @@ p {
   .dashboard-grid,
   .cta-card,
   .proof-grid,
+  .land-layout,
   .traceability-box,
   .footer-shell {
     grid-template-columns: 1fr;
@@ -697,8 +848,22 @@ p {
   .produce-grid,
   .sensor-grid,
   .faq-grid,
-  .stat-row {
+  .stat-row,
+  .plot-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .land-overview {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .field-grid {
+    max-width: 21rem;
+  }
+
+  .plot-zone {
+    min-height: 7.5rem;
   }
 
   .hero {

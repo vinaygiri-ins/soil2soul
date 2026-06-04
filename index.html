@@ -30,6 +30,7 @@
 
       <nav id="site-nav" class="site-nav">
         <a href="#story">Our Farm</a>
+        <a href="#land-map">Land Map</a>
         <a href="#proof">Proof Model</a>
         <a href="#produce">Produce</a>
         <a href="#dashboard">Live Data</a>
@@ -146,6 +147,89 @@
             <h3>Scalable Model</h3>
             <p>The MVP is single-farm now, but structured so other farmers can join later.</p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tinted" id="land-map">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Project land</p>
+          <h2>A simple field prototype that turns one land parcel into four active organic farming zones.</h2>
+          <p>
+            This MVP map treats the land as four project boxes with separate crop cycles. Visitors can click a zone to
+            understand its provisional area, current state, and what kind of updates will appear there as the farm progresses.
+          </p>
+        </div>
+
+        <div class="land-layout">
+          <div class="land-card">
+            <div class="land-overview">
+              <div>
+                <p class="panel-label">Measured land</p>
+                <h3>15,033.97 m² total area</h3>
+              </div>
+              <p>Prototype split into 4 equal project sections of approximately 3,758.49 m² each until exact section measurements are added.</p>
+            </div>
+
+            <div class="land-diagram" role="group" aria-label="Interactive farm land prototype">
+              <div class="field-grid">
+                <button class="plot-zone is-active" type="button" data-plot="D" aria-pressed="true">
+                  <span class="plot-zone-label">D</span>
+                  <span class="plot-zone-note">Top left</span>
+                </button>
+                <button class="plot-zone" type="button" data-plot="A" aria-pressed="false">
+                  <span class="plot-zone-label">A</span>
+                  <span class="plot-zone-note">Top right</span>
+                </button>
+                <button class="plot-zone" type="button" data-plot="C" aria-pressed="false">
+                  <span class="plot-zone-label">C</span>
+                  <span class="plot-zone-note">Bottom left</span>
+                </button>
+                <button class="plot-zone" type="button" data-plot="B" aria-pressed="false">
+                  <span class="plot-zone-label">B</span>
+                  <span class="plot-zone-note">Bottom right</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="land-caption">
+              <span><i class="dot dot-green"></i> Click a section to see its present state</span>
+              <span><i class="dot dot-amber"></i> Exact agronomy stats can be added later</span>
+            </div>
+          </div>
+
+          <aside class="plot-panel">
+            <p class="panel-label">Selected field section</p>
+            <h3 id="plotTitle">Plot D</h3>
+            <p id="plotPosition">Top left project zone</p>
+
+            <div class="plot-metrics">
+              <article>
+                <span>Approx. area</span>
+                <strong id="plotArea">3,758.49 m²</strong>
+              </article>
+              <article>
+                <span>Current state</span>
+                <strong id="plotState">Baseline mapping</strong>
+              </article>
+            </div>
+
+            <div class="plot-details">
+              <div>
+                <span class="plot-label">Present condition</span>
+                <p id="plotCondition">This section is currently shown as a mapped project block and is ready for soil, crop, and activity details to be attached later.</p>
+              </div>
+              <div>
+                <span class="plot-label">Current cycle focus</span>
+                <p id="plotCycle">Cycle planning and section definition for the first organic season.</p>
+              </div>
+              <div>
+                <span class="plot-label">What the website will show here</span>
+                <p id="plotWebsite">Section-wise dimensions, crop cycle, soil health notes, field photos, and sensor-linked updates.</p>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
