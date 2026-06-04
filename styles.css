@@ -920,7 +920,9 @@ p {
 }
 
 .land-page-hero,
-.ops-grid {
+.ops-grid,
+.land-flow,
+.whole-land-grid {
   display: grid;
   gap: 1.5rem;
 }
@@ -932,6 +934,94 @@ p {
 
 .ops-grid {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.land-flow {
+  grid-template-columns: 1fr;
+}
+
+.land-flow-card {
+  padding: 1.6rem;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 250, 241, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+}
+
+.land-flow-intro h1 {
+  max-width: 14ch;
+}
+
+.section-heading-tight {
+  margin-bottom: 1.25rem;
+}
+
+.whole-land-grid {
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 1.4rem;
+}
+
+.whole-land-metric {
+  padding: 1rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.whole-land-metric span {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soil);
+}
+
+.whole-land-metric strong {
+  font-family: "Fraunces", serif;
+  font-size: 1.2rem;
+}
+
+.land-map-sheet {
+  padding-bottom: 1.2rem;
+}
+
+.land-diagram-sheet {
+  margin-top: 1rem;
+}
+
+.selected-area-card .plot-details {
+  margin-top: 1rem;
+}
+
+.plan-timeline {
+  display: grid;
+  gap: 0.85rem;
+  padding: 0;
+  margin: 1rem 0 0;
+  list-style: none;
+}
+
+.plan-timeline li {
+  position: relative;
+  padding: 0.95rem 1rem 0.95rem 1.4rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.plan-timeline li::before {
+  content: "";
+  position: absolute;
+  left: 0.8rem;
+  top: 1.25rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: var(--leaf);
 }
 
 .ops-card {
@@ -1024,7 +1114,8 @@ p {
   .timeline-grid,
   .produce-grid,
   .faq-grid,
-  .ops-grid {
+  .ops-grid,
+  .whole-land-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -1060,6 +1151,7 @@ p {
   .sensor-grid,
   .faq-grid,
   .ops-grid,
+  .whole-land-grid,
   .stat-row,
   .plot-metrics {
     grid-template-columns: 1fr;

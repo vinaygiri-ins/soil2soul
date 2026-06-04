@@ -61,7 +61,16 @@ const plotContent = {
     state: "Survey mapped",
     condition: "This top-right section is part of the actual measured parcel and is ready to carry its own soil readings, crop plan, and live field condition updates.",
     cycle: "Independent 6 biga organic crop cycle with its own sowing, observation, and harvest timeline.",
-    website: "This plot can display local biga area, moisture data, crop stage, field notes, and proof records for customers."
+    website: "This plot can display local biga area, moisture data, crop stage, field notes, and proof records for customers.",
+    current: "Current priority for Plot A can be soil preparation, crop selection, and setting the first working records for the section.",
+    timeline: [
+      "Month 1: finalize crop choice for Plot A and record soil condition.",
+      "Month 2: prepare beds, align irrigation, and start cultivation notes.",
+      "Month 3: monitor early growth and attach first field images.",
+      "Month 4: continue moisture, health, and crop stage observations.",
+      "Month 5: prepare harvest visibility and packing expectations.",
+      "Month 6: record harvest outcome and decide the next cycle."
+    ]
   },
   B: {
     title: "Plot B",
@@ -71,7 +80,16 @@ const plotContent = {
     state: "Survey mapped",
     condition: "This bottom-right section is marked as its own farming unit so the website can later show its present condition, crop-specific updates, and harvest readiness clearly.",
     cycle: "Planned as a separate 6 biga cycle for crop scheduling, harvest planning, and packaging visibility.",
-    website: "This plot can later show daily field activity, current crop, local area measurement, and section-wise trust records."
+    website: "This plot can later show daily field activity, current crop, local area measurement, and section-wise trust records.",
+    current: "Current priority for Plot B can be section planning around crop scheduling, harvest sequence, and output planning.",
+    timeline: [
+      "Month 1: define crop objective and section work calendar for Plot B.",
+      "Month 2: prepare the area and attach irrigation and compost notes.",
+      "Month 3: start growth-stage tracking and condition logging.",
+      "Month 4: maintain cultivation updates and field observations.",
+      "Month 5: prepare produce readiness notes and early harvest planning.",
+      "Month 6: close the cycle with harvest and post-cycle decisions."
+    ]
   },
   C: {
     title: "Plot C",
@@ -81,7 +99,16 @@ const plotContent = {
     state: "Survey mapped",
     condition: "This bottom-left section is now tied to the actual parcel measurement and can later reflect real soil and cultivation status once you provide the section data.",
     cycle: "Dedicated 6 biga cycle space for one crop plan, with separate logs for irrigation, compost, and growth updates.",
-    website: "This plot can later show dimensions, local biga area, present condition, and crop progress for direct customer trust."
+    website: "This plot can later show dimensions, local biga area, present condition, and crop progress for direct customer trust.",
+    current: "Current priority for Plot C can be understanding cultivation condition and preparing section-specific logs for field progress.",
+    timeline: [
+      "Month 1: map current condition and document section readiness.",
+      "Month 2: align crop plan and start irrigation and compost logging.",
+      "Month 3: monitor growth and attach first on-ground updates.",
+      "Month 4: continue land health observations and section review.",
+      "Month 5: prepare crop maturity notes and expected harvest planning.",
+      "Month 6: record final outcomes and define the next crop cycle."
+    ]
   },
   D: {
     title: "Plot D",
@@ -91,7 +118,16 @@ const plotContent = {
     state: "Survey mapped",
     condition: "This top-left section is shown inside the actual measured farm parcel and is ready for soil, crop, and activity details to be attached later.",
     cycle: "Cycle planning and section definition for the first 6 biga organic season.",
-    website: "Section-wise dimensions, local biga area, crop cycle, soil health notes, field photos, and sensor-linked updates."
+    website: "Section-wise dimensions, local biga area, crop cycle, soil health notes, field photos, and sensor-linked updates.",
+    current: "Current priority for Plot D can be first-season planning, soil notes, and setting the baseline records for future crop updates.",
+    timeline: [
+      "Month 1: define the first crop cycle and attach baseline soil notes.",
+      "Month 2: prepare the section and start irrigation and field activity records.",
+      "Month 3: log early growth and visual field observations.",
+      "Month 4: track cultivation status and section health updates.",
+      "Month 5: prepare harvest notes and expected packing readiness.",
+      "Month 6: review harvest, learnings, and the next rotation decision."
+    ]
   }
 };
 
@@ -113,9 +149,11 @@ function updatePlotPanel(plotKey) {
   const plotCondition = document.getElementById("plotCondition");
   const plotCycle = document.getElementById("plotCycle");
   const plotWebsite = document.getElementById("plotWebsite");
+  const plotCurrent = document.getElementById("plotCurrent");
+  const plotTimeline = document.getElementById("plotTimeline");
   const plotIndex = document.getElementById("plotIndex");
 
-  if (!plotTitle || !plotPosition || !plotScope || !plotArea || !plotState || !plotCondition || !plotCycle || !plotWebsite || !plotIndex) {
+  if (!plotTitle || !plotPosition || !plotScope || !plotArea || !plotState || !plotCondition || !plotCycle || !plotWebsite || !plotCurrent || !plotTimeline || !plotIndex) {
     return;
   }
 
@@ -129,7 +167,9 @@ function updatePlotPanel(plotKey) {
   plotCondition.textContent = plot.condition;
   plotCycle.textContent = plot.cycle;
   plotWebsite.textContent = plot.website;
+  plotCurrent.textContent = plot.current;
   plotIndex.textContent = `${plotOrder.indexOf(plotKey) + 1} / ${plotOrder.length}`;
+  plotTimeline.innerHTML = plot.timeline.map((item) => `<li>${item}</li>`).join("");
 
   plotButtons.forEach((button) => {
     const isActive = button.dataset.plot === plotKey;
