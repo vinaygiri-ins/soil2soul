@@ -139,6 +139,30 @@ const plotContent = {
 const plotOrder = ["D", "A", "C", "B"];
 let activePlotKey = "D";
 
+async function requestAiPlotSummary(plotKey) {
+  const plot = plotContent[plotKey];
+
+  if (!plot) {
+    throw new Error("Plot data not found.");
+  }
+
+  const response = await fetch("/api/plot-summary", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ plot })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.error || "Failed to generate plot insight.");
+  }
+
+  return data;
+}
+
 function updatePlotPanel(plotKey) {
   const plot = plotContent[plotKey];
 
@@ -232,7 +256,7 @@ if (plotNextButton) {
 }
 
 if (generateAiParcelButton) {
-  generateAiParcelButton.addEventListener("click", () => {
+  generateAiParcelButton.addEventListener("click", async () => {
     const aiPlotTitle = document.getElementById("aiPlotTitle");
     const aiParcelSummary = document.getElementById("aiParcelSummary");
     const plot = plotContent[activePlotKey];
@@ -241,7 +265,19 @@ if (generateAiParcelButton) {
       return;
     }
 
+    generateAiParcelButton.disabled = true;
+    generateAiParcelButton.textContent = "Generating...";
     aiPlotTitle.textContent = `AI note for ${plot.title}`;
-    aiParcelSummary.textContent = `${plot.aiSummary} This result is currently generated locally as a placeholder, but the same button can later call OpenAI through your backend and cache the response to control cost.`;
+
+    try {
+      const result = await requestAiPlotSummary(activePlotKey);
+      aiParcelSummary.textContent = result.summary;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      aiParcelSummary.textContent = `${plot.aiSummary} This is the local fallback because the live AI request could not complete. Reason: ${message}`;
+    } finally {
+      generateAiParcelButton.disabled = false;
+      generateAiParcelButton.textContent = "Generate Plot Insight";
+    }
   });
 }

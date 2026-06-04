@@ -15,6 +15,29 @@ This project should use OpenAI in the cheapest safe way:
 4. Backend stores the returned summary.
 5. Frontend displays the saved result.
 
+## Current implementation in this repo
+
+This repo now includes a Cloudflare Pages Function:
+
+- `/functions/api/plot-summary.js`
+
+Frontend button:
+
+- `Generate Plot Insight` on `land-workspace.html`
+
+Current behavior:
+
+1. Frontend sends the selected plot object to `/api/plot-summary`
+2. The Pages Function calls the OpenAI Responses API
+3. If `OPENAI_API_KEY` is missing or the request fails, it falls back to a local summary
+
+## Cloudflare environment variables to add
+
+In your Cloudflare Pages project settings, add:
+
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL` with value `gpt-5.4-mini` (optional, but recommended)
+
 ## Suggested prompt shape
 
 Send only short structured data, for example:
@@ -31,9 +54,9 @@ Avoid sending long history every time because that increases cost.
 
 ## Example backend structure
 
-Python backend route:
+Backend route:
 
-- `POST /api/ai/plot-summary`
+- `POST /api/plot-summary`
 
 Request body:
 
