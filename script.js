@@ -56,42 +56,42 @@ const plotContent = {
   A: {
     title: "Plot A",
     position: "Top right project zone",
-    scope: "Field section 2 of 4 in the Soil to Soul land workspace.",
-    area: "3,758.49 m²",
-    state: "Observation-ready",
-    condition: "This section is reserved as an individual project block and can later show exact dimensions, soil readings, crop plan, and current field condition.",
-    cycle: "Independent organic crop cycle with its own sowing, observation, and harvest timeline.",
-    website: "This plot can display moisture data, crop stage, field notes, and proof records for customers."
+    scope: "Field section 2 of 4 in the 24 biga Soil to Soul land workspace.",
+    area: "6 biga | 3,804.69 m²",
+    state: "Survey mapped",
+    condition: "This top-right section is part of the actual measured parcel and is ready to carry its own soil readings, crop plan, and live field condition updates.",
+    cycle: "Independent 6 biga organic crop cycle with its own sowing, observation, and harvest timeline.",
+    website: "This plot can display local biga area, moisture data, crop stage, field notes, and proof records for customers."
   },
   B: {
     title: "Plot B",
     position: "Bottom right project zone",
-    scope: "Field section 4 of 4 in the Soil to Soul land workspace.",
-    area: "3,758.49 m²",
-    state: "Section mapping complete",
-    condition: "This area is marked as a separate farming unit in the MVP so the website can later show its present condition and crop-specific updates clearly.",
-    cycle: "Planned as a separate cycle for crop scheduling, harvest planning, and packaging visibility.",
-    website: "This plot can later show daily field activity, current crop, and section-wise trust records."
+    scope: "Field section 4 of 4 in the 24 biga Soil to Soul land workspace.",
+    area: "6 biga | 3,804.69 m²",
+    state: "Survey mapped",
+    condition: "This bottom-right section is marked as its own farming unit so the website can later show its present condition, crop-specific updates, and harvest readiness clearly.",
+    cycle: "Planned as a separate 6 biga cycle for crop scheduling, harvest planning, and packaging visibility.",
+    website: "This plot can later show daily field activity, current crop, local area measurement, and section-wise trust records."
   },
   C: {
     title: "Plot C",
     position: "Bottom left project zone",
-    scope: "Field section 3 of 4 in the Soil to Soul land workspace.",
-    area: "3,758.49 m²",
-    state: "Baseline setup",
-    condition: "This section is currently presented as a project box under initial planning and can later reflect real soil and cultivation status once you provide the data.",
-    cycle: "Dedicated cycle space for one crop plan, with separate logs for irrigation, compost, and growth updates.",
-    website: "This plot can later show dimensions, present condition, and crop progress for direct customer trust."
+    scope: "Field section 3 of 4 in the 24 biga Soil to Soul land workspace.",
+    area: "6 biga | 3,804.69 m²",
+    state: "Survey mapped",
+    condition: "This bottom-left section is now tied to the actual parcel measurement and can later reflect real soil and cultivation status once you provide the section data.",
+    cycle: "Dedicated 6 biga cycle space for one crop plan, with separate logs for irrigation, compost, and growth updates.",
+    website: "This plot can later show dimensions, local biga area, present condition, and crop progress for direct customer trust."
   },
   D: {
     title: "Plot D",
     position: "Top left project zone",
-    scope: "Field section 1 of 4 in the Soil to Soul land workspace.",
-    area: "3,758.49 m²",
-    state: "Baseline mapping",
-    condition: "This section is currently shown as a mapped project block and is ready for soil, crop, and activity details to be attached later.",
-    cycle: "Cycle planning and section definition for the first organic season.",
-    website: "Section-wise dimensions, crop cycle, soil health notes, field photos, and sensor-linked updates."
+    scope: "Field section 1 of 4 in the 24 biga Soil to Soul land workspace.",
+    area: "6 biga | 3,804.69 m²",
+    state: "Survey mapped",
+    condition: "This top-left section is shown inside the actual measured farm parcel and is ready for soil, crop, and activity details to be attached later.",
+    cycle: "Cycle planning and section definition for the first 6 biga organic season.",
+    website: "Section-wise dimensions, local biga area, crop cycle, soil health notes, field photos, and sensor-linked updates."
   }
 };
 
