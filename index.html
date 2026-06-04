@@ -164,6 +164,14 @@
 
         <div class="land-layout">
           <div class="land-card">
+            <div class="panel-head land-head">
+              <div>
+                <p class="eyebrow">Land workspace</p>
+                <h3>Section-by-section control for one organic farming parcel</h3>
+              </div>
+              <span class="status-pill">4 active zones</span>
+            </div>
+
             <div class="land-overview">
               <div>
                 <p class="panel-label">Measured land</p>
@@ -172,7 +180,37 @@
               <p>Prototype split into 4 equal project sections of approximately 3,758.49 m² each until exact section measurements are added.</p>
             </div>
 
+            <div class="plot-chip-bar" role="tablist" aria-label="Land section controls">
+              <button class="plot-chip is-active" type="button" data-plot-chip="D" aria-selected="true">Plot D <span>Top left</span></button>
+              <button class="plot-chip" type="button" data-plot-chip="A" aria-selected="false">Plot A <span>Top right</span></button>
+              <button class="plot-chip" type="button" data-plot-chip="C" aria-selected="false">Plot C <span>Bottom left</span></button>
+              <button class="plot-chip" type="button" data-plot-chip="B" aria-selected="false">Plot B <span>Bottom right</span></button>
+            </div>
+
+            <div class="land-stat-row">
+              <button class="land-stat-chip is-active" type="button" data-plot-chip="D">
+                <span>Current focus</span>
+                <strong>Plot D</strong>
+              </button>
+              <button class="land-stat-chip" type="button" data-plot-chip="A">
+                <span>Prototype area</span>
+                <strong>3,758.49 m²</strong>
+              </button>
+              <button class="land-stat-chip" type="button" data-plot-chip="B">
+                <span>Cycle mode</span>
+                <strong>Independent</strong>
+              </button>
+              <button class="land-stat-chip" type="button" data-plot-chip="C">
+                <span>Status model</span>
+                <strong>Field-ready</strong>
+              </button>
+            </div>
+
             <div class="land-diagram" role="group" aria-label="Interactive farm land prototype">
+              <div class="land-diagram-head">
+                <p class="eyebrow">Field navigator</p>
+                <p>Click any block to move across the four project zones.</p>
+              </div>
               <div class="field-grid">
                 <button class="plot-zone is-active" type="button" data-plot="D" aria-pressed="true">
                   <span class="plot-zone-label">D</span>
@@ -200,33 +238,57 @@
           </div>
 
           <aside class="plot-panel">
-            <p class="panel-label">Selected field section</p>
-            <h3 id="plotTitle">Plot D</h3>
-            <p id="plotPosition">Top left project zone</p>
-
-            <div class="plot-metrics">
-              <article>
-                <span>Approx. area</span>
-                <strong id="plotArea">3,758.49 m²</strong>
-              </article>
-              <article>
-                <span>Current state</span>
-                <strong id="plotState">Baseline mapping</strong>
-              </article>
-            </div>
-
-            <div class="plot-details">
-              <div>
-                <span class="plot-label">Present condition</span>
-                <p id="plotCondition">This section is currently shown as a mapped project block and is ready for soil, crop, and activity details to be attached later.</p>
+            <div class="plot-panel-shell">
+              <div class="plot-panel-head">
+                <div>
+                  <p class="panel-label">Selected field section</p>
+                  <h3 id="plotTitle">Plot D</h3>
+                  <p id="plotPosition">Top left project zone</p>
+                </div>
+                <div class="plot-nav">
+                  <button id="plotPrevButton" type="button" class="button button-muted plot-nav-button" aria-label="Show previous plot">
+                    &lt;
+                  </button>
+                  <span id="plotIndex" class="status-pill plot-index">1 / 4</span>
+                  <button id="plotNextButton" type="button" class="button button-muted plot-nav-button" aria-label="Show next plot">
+                    &gt;
+                  </button>
+                </div>
               </div>
-              <div>
-                <span class="plot-label">Current cycle focus</span>
-                <p id="plotCycle">Cycle planning and section definition for the first organic season.</p>
+
+              <p id="plotScope" class="plot-scope">Field section 1 of 4 in the Soil to Soul land workspace.</p>
+
+              <div class="plot-metrics">
+                <article>
+                  <span>Approx. area</span>
+                  <strong id="plotArea">3,758.49 m²</strong>
+                </article>
+                <article>
+                  <span>Current state</span>
+                  <strong id="plotState">Baseline mapping</strong>
+                </article>
               </div>
-              <div>
-                <span class="plot-label">What the website will show here</span>
-                <p id="plotWebsite">Section-wise dimensions, crop cycle, soil health notes, field photos, and sensor-linked updates.</p>
+
+              <div class="plot-details-shell">
+                <div class="plot-details-head">
+                  <p class="eyebrow">Selected plot details</p>
+                  <span class="status-pill status-live">Prototype view</span>
+                </div>
+
+                <div class="plot-details">
+                  <div>
+                    <span class="plot-label">Present condition</span>
+                    <p id="plotCondition">This section is currently shown as a mapped project block and is ready for soil, crop, and activity details to be attached later.</p>
+                  </div>
+                  <div>
+                    <span class="plot-label">Current cycle focus</span>
+                    <p id="plotCycle">Cycle planning and section definition for the first organic season.</p>
+                  </div>
+                  <div>
+                    <span class="plot-label">What the website will show here</span>
+                    <p id="plotWebsite">Section-wise dimensions, crop cycle, soil health notes, field photos, and sensor-linked updates.</p>
+                  </div>
+                </div>
               </div>
             </div>
           </aside>
