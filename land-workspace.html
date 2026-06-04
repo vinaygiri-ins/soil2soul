@@ -179,6 +179,50 @@
       </div>
     </section>
 
+    <section class="section" id="ai-assistant">
+      <div class="container land-flow">
+        <article class="land-flow-card ai-ops-card">
+          <div class="ai-ops-head">
+            <div>
+              <p class="eyebrow">AI parcel assistant</p>
+              <h2>Manual AI insight for the selected plot</h2>
+              <p>
+                This is the cheapest safe pattern for OpenAI use: no automatic calls, one manual button, and cached output
+                per selected parcel. That keeps costs low and makes the AI usage intentional.
+              </p>
+            </div>
+            <button id="generateAiParcelButton" class="button" type="button">Generate Plot Insight</button>
+          </div>
+
+          <div class="ai-ops-grid">
+            <article class="ai-chip-card">
+              <span>Calling style</span>
+              <strong>Manual trigger only</strong>
+            </article>
+            <article class="ai-chip-card">
+              <span>Best model</span>
+              <strong>Low-cost mini</strong>
+            </article>
+            <article class="ai-chip-card">
+              <span>Cost control</span>
+              <strong>Cache per plot</strong>
+            </article>
+          </div>
+
+          <div class="ai-output-card">
+            <div class="ai-output-head">
+              <strong id="aiPlotTitle">AI note for Plot D</strong>
+              <span class="status-pill">Cost-safe mode</span>
+            </div>
+            <p id="aiParcelSummary">
+              Click "Generate Plot Insight" to create a short AI-style summary for the selected land parcel. In the real version,
+              this is where an OpenAI response would appear after your backend sends the plot data.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="section" id="next-six-months">
       <div class="container land-flow">
         <article class="land-flow-card">

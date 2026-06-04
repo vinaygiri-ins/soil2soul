@@ -1022,6 +1022,58 @@ p {
   background: var(--leaf);
 }
 
+.ai-ops-card,
+.ai-ops-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.ai-ops-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ai-ops-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ai-chip-card,
+.ai-output-card {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.ai-chip-card span {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soil);
+}
+
+.ai-chip-card strong {
+  font-family: "Fraunces", serif;
+  font-size: 1.1rem;
+}
+
+.ai-output-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.ai-output-card p {
+  margin: 0;
+}
+
 .ops-card {
   padding: 1.35rem;
   border-radius: var(--radius-xl);
@@ -1113,6 +1165,7 @@ p {
   .produce-grid,
   .faq-grid,
   .ops-grid,
+  .ai-ops-grid,
   .whole-land-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1149,10 +1202,16 @@ p {
   .sensor-grid,
   .faq-grid,
   .ops-grid,
+  .ai-ops-grid,
   .whole-land-grid,
   .stat-row,
   .plot-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .ai-ops-head,
+  .ai-output-head {
+    flex-direction: column;
   }
 
   .land-overview {

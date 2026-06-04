@@ -5,6 +5,7 @@ const plotButtons = document.querySelectorAll(".plot-zone");
 const plotChips = document.querySelectorAll("[data-plot-chip]");
 const plotPrevButton = document.getElementById("plotPrevButton");
 const plotNextButton = document.getElementById("plotNextButton");
+const generateAiParcelButton = document.getElementById("generateAiParcelButton");
 
 if (navToggle && siteNav) {
   navToggle.addEventListener("click", () => {
@@ -63,6 +64,7 @@ const plotContent = {
     cycle: "Independent 6 biga organic crop cycle with its own sowing, observation, and harvest timeline.",
     website: "This plot can display local biga area, moisture data, crop stage, field notes, and proof records for customers.",
     current: "Current priority for Plot A can be soil preparation, crop selection, and setting the first working records for the section.",
+    aiSummary: "Plot A looks best suited for an early planning push: confirm the crop, prepare the soil record, and keep the first irrigation plan simple and documented.",
     timeline: [
       "Month 1: finalize crop choice for Plot A and record soil condition.",
       "Month 2: prepare beds, align irrigation, and start cultivation notes.",
@@ -82,6 +84,7 @@ const plotContent = {
     cycle: "Planned as a separate 6 biga cycle for crop scheduling, harvest planning, and packaging visibility.",
     website: "This plot can later show daily field activity, current crop, local area measurement, and section-wise trust records.",
     current: "Current priority for Plot B can be section planning around crop scheduling, harvest sequence, and output planning.",
+    aiSummary: "Plot B should be treated as an output-focused section, with attention on sequencing, field readiness, and harvest planning so the cycle stays organized.",
     timeline: [
       "Month 1: define crop objective and section work calendar for Plot B.",
       "Month 2: prepare the area and attach irrigation and compost notes.",
@@ -101,6 +104,7 @@ const plotContent = {
     cycle: "Dedicated 6 biga cycle space for one crop plan, with separate logs for irrigation, compost, and growth updates.",
     website: "This plot can later show dimensions, local biga area, present condition, and crop progress for direct customer trust.",
     current: "Current priority for Plot C can be understanding cultivation condition and preparing section-specific logs for field progress.",
+    aiSummary: "Plot C needs clarity on current condition first. Once the section notes are stable, it becomes easier to plan irrigation, crop timing, and progress tracking.",
     timeline: [
       "Month 1: map current condition and document section readiness.",
       "Month 2: align crop plan and start irrigation and compost logging.",
@@ -120,6 +124,7 @@ const plotContent = {
     cycle: "Cycle planning and section definition for the first 6 biga organic season.",
     website: "Section-wise dimensions, local biga area, crop cycle, soil health notes, field photos, and sensor-linked updates.",
     current: "Current priority for Plot D can be first-season planning, soil notes, and setting the baseline records for future crop updates.",
+    aiSummary: "Plot D is a strong starting section for baseline planning. The best next move is to fix soil notes, define the first crop cycle, and begin clean operational logging.",
     timeline: [
       "Month 1: define the first crop cycle and attach baseline soil notes.",
       "Month 2: prepare the section and start irrigation and field activity records.",
@@ -152,6 +157,8 @@ function updatePlotPanel(plotKey) {
   const plotCurrent = document.getElementById("plotCurrent");
   const plotTimeline = document.getElementById("plotTimeline");
   const plotIndex = document.getElementById("plotIndex");
+  const aiPlotTitle = document.getElementById("aiPlotTitle");
+  const aiParcelSummary = document.getElementById("aiParcelSummary");
 
   if (!plotTitle || !plotPosition || !plotScope || !plotArea || !plotState || !plotCondition || !plotCycle || !plotWebsite || !plotCurrent || !plotTimeline || !plotIndex) {
     return;
@@ -170,6 +177,11 @@ function updatePlotPanel(plotKey) {
   plotCurrent.textContent = plot.current;
   plotIndex.textContent = `${plotOrder.indexOf(plotKey) + 1} / ${plotOrder.length}`;
   plotTimeline.innerHTML = plot.timeline.map((item) => `<li>${item}</li>`).join("");
+
+  if (aiPlotTitle && aiParcelSummary) {
+    aiPlotTitle.textContent = `AI note for ${plot.title}`;
+    aiParcelSummary.textContent = `Click "Generate Plot Insight" to create a short AI-style summary for ${plot.title}. In the real version, this is where a cached OpenAI response would appear.`;
+  }
 
   plotButtons.forEach((button) => {
     const isActive = button.dataset.plot === plotKey;
@@ -216,5 +228,20 @@ if (plotNextButton) {
     const currentIndex = plotOrder.indexOf(activePlotKey);
     const nextIndex = (currentIndex + 1) % plotOrder.length;
     updatePlotPanel(plotOrder[nextIndex]);
+  });
+}
+
+if (generateAiParcelButton) {
+  generateAiParcelButton.addEventListener("click", () => {
+    const aiPlotTitle = document.getElementById("aiPlotTitle");
+    const aiParcelSummary = document.getElementById("aiParcelSummary");
+    const plot = plotContent[activePlotKey];
+
+    if (!aiPlotTitle || !aiParcelSummary || !plot) {
+      return;
+    }
+
+    aiPlotTitle.textContent = `AI note for ${plot.title}`;
+    aiParcelSummary.textContent = `${plot.aiSummary} This result is currently generated locally as a placeholder, but the same button can later call OpenAI through your backend and cache the response to control cost.`;
   });
 }
