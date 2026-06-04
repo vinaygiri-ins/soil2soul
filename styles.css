@@ -578,11 +578,10 @@ p {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
-  aspect-ratio: 1 / 1;
-  max-width: 32rem;
+  aspect-ratio: 3 / 4;
+  max-width: 24rem;
   margin: 0 auto;
   padding: 1rem;
-  transform: rotate(-45deg);
 }
 
 .plot-zone {
@@ -613,7 +612,6 @@ p {
 
 .plot-zone > span {
   display: block;
-  transform: rotate(45deg);
 }
 
 .plot-zone-label {
@@ -1163,7 +1161,7 @@ p {
   }
 
   .field-grid {
-    max-width: 21rem;
+    max-width: 18rem;
   }
 
   .plot-zone {
