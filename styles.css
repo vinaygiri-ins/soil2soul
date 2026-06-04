@@ -893,6 +893,55 @@ p {
   margin-bottom: 0;
 }
 
+.land-preview-card {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.6rem;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 250, 241, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+}
+
+.land-preview-actions {
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+}
+
+.land-preview-actions p {
+  margin: 0;
+}
+
+.land-page-shell {
+  min-height: calc(100vh - 5rem);
+}
+
+.land-page-hero,
+.ops-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.land-page-hero {
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: stretch;
+}
+
+.ops-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ops-card {
+  padding: 1.35rem;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 250, 241, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+}
+
 .cta-card {
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
@@ -964,6 +1013,8 @@ p {
   .cta-card,
   .proof-grid,
   .land-layout,
+  .land-preview-card,
+  .land-page-hero,
   .traceability-box,
   .footer-shell {
     grid-template-columns: 1fr;
@@ -972,7 +1023,8 @@ p {
   .intro-cards,
   .timeline-grid,
   .produce-grid,
-  .faq-grid {
+  .faq-grid,
+  .ops-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -1007,6 +1059,7 @@ p {
   .produce-grid,
   .sensor-grid,
   .faq-grid,
+  .ops-grid,
   .stat-row,
   .plot-metrics {
     grid-template-columns: 1fr;

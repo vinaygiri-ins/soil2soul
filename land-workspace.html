@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soil to Soul | Land Workspace</title>
+  <meta name="description" content="Operational land workspace for the Soil to Soul farm parcel in Rangpur, including plot sections, parcel measurements, and planning-ready field details.">
+  <meta name="theme-color" content="#24472d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="/index.html" aria-label="Soil to Soul">
+        <span class="brand-mark">S2S</span>
+        <span class="brand-text">
+          <strong>Soil to Soul</strong>
+          <small>Land Workspace</small>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav">
+        <a href="/index.html">Main Website</a>
+        <a href="#workspace-top">Overview</a>
+        <a href="#workspace-map">Parcel Map</a>
+        <a href="#workspace-notes">Ops Notes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="workspace-top" class="land-page-shell">
+    <section class="section">
+      <div class="container land-page-hero">
+        <div class="hero-copy panel-card panel-main">
+          <p class="eyebrow">Operations workspace</p>
+          <h1>24 biga land planning area for Soil to Soul.</h1>
+          <p class="hero-text">
+            This page is separate from the public-facing farm website. It is meant to work as your field planning space,
+            where each section of the parcel can later hold its own crop cycle, notes, measurements, and operational records.
+          </p>
+          <ul class="hero-highlights">
+            <li>4 working zones</li>
+            <li>6 biga per zone</li>
+            <li>15,218.75 m² measured parcel</li>
+          </ul>
+        </div>
+
+        <aside class="panel-card panel-note">
+          <p class="panel-label">Parcel metrics</p>
+          <ul>
+            <li>Total parcel: 24 biga</li>
+            <li>Measured area: 15,218.75 m²</li>
+            <li>Measured perimeter: 520.54 m</li>
+            <li>Elevation estimate: 220.31 m to 225.89 m</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-tinted" id="workspace-map">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Parcel map</p>
+          <h2>Section-by-section control for one measured organic farming parcel.</h2>
+          <p>
+            The parcel is currently divided into four equal working zones for planning: A, B, C, and D.
+            Each zone is treated as a 6 biga operational cycle until more exact section-specific measurements are added.
+          </p>
+        </div>
+
+        <div class="land-layout">
+          <div class="land-card">
+            <div class="panel-head land-head">
+              <div>
+                <p class="eyebrow">Land workspace</p>
+                <h3>Section-by-section control for one organic farming parcel</h3>
+              </div>
+              <span class="status-pill">4 active zones</span>
+            </div>
+
+            <div class="land-overview">
+              <div>
+                <p class="panel-label">Measured land</p>
+                <h3>24 biga | 15,218.75 m² total area</h3>
+              </div>
+              <p>Measured perimeter is 520.54 m. For the current planning model, the parcel is divided into 4 equal working sections of 6 biga each, approximately 3,804.69 m² per section.</p>
+            </div>
+
+            <div class="plot-chip-bar" role="tablist" aria-label="Land section controls">
+              <button class="plot-chip is-active" type="button" data-plot-chip="D" aria-selected="true">Plot D <span>Top left</span></button>
+              <button class="plot-chip" type="button" data-plot-chip="A" aria-selected="false">Plot A <span>Top right</span></button>
+              <button class="plot-chip" type="button" data-plot-chip="C" aria-selected="false">Plot C <span>Bottom left</span></button>
+              <button class="plot-chip" type="button" data-plot-chip="B" aria-selected="false">Plot B <span>Bottom right</span></button>
+            </div>
+
+            <div class="land-stat-row">
+              <button class="land-stat-chip is-active" type="button" data-plot-chip="D">
+                <span>Total parcel</span>
+                <strong>24 biga</strong>
+              </button>
+              <button class="land-stat-chip" type="button" data-plot-chip="A">
+                <span>Per plot area</span>
+                <strong>6 biga</strong>
+              </button>
+              <button class="land-stat-chip" type="button" data-plot-chip="B">
+                <span>Measured perimeter</span>
+                <strong>520.54 m</strong>
+              </button>
+              <button class="land-stat-chip" type="button" data-plot-chip="C">
+                <span>Elevation range</span>
+                <strong>220.31-225.89 m</strong>
+              </button>
+            </div>
+
+            <div class="land-diagram" role="group" aria-label="Interactive farm land prototype">
+              <div class="land-diagram-head">
+                <p class="eyebrow">Field navigator</p>
+                <p>Click any block to move across the four project zones.</p>
+              </div>
+              <div class="field-grid">
+                <button class="plot-zone is-active" type="button" data-plot="D" aria-pressed="true">
+                  <span class="plot-zone-label">D</span>
+                  <span class="plot-zone-note">Top left</span>
+                </button>
+                <button class="plot-zone" type="button" data-plot="A" aria-pressed="false">
+                  <span class="plot-zone-label">A</span>
+                  <span class="plot-zone-note">Top right</span>
+                </button>
+                <button class="plot-zone" type="button" data-plot="C" aria-pressed="false">
+                  <span class="plot-zone-label">C</span>
+                  <span class="plot-zone-note">Bottom left</span>
+                </button>
+                <button class="plot-zone" type="button" data-plot="B" aria-pressed="false">
+                  <span class="plot-zone-label">B</span>
+                  <span class="plot-zone-note">Bottom right</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="land-caption">
+              <span><i class="dot dot-green"></i> Click a section to see its present state</span>
+              <span><i class="dot dot-amber"></i> Replace equal zones later if exact section measurements differ</span>
+            </div>
+          </div>
+
+          <aside class="plot-panel">
+            <div class="plot-panel-shell">
+              <div class="plot-panel-head">
+                <div>
+                  <p class="panel-label">Selected field section</p>
+                  <h3 id="plotTitle">Plot D</h3>
+                  <p id="plotPosition">Top left project zone</p>
+                </div>
+                <div class="plot-nav">
+                  <button id="plotPrevButton" type="button" class="button button-muted plot-nav-button" aria-label="Show previous plot">
+                    &lt;
+                  </button>
+                  <span id="plotIndex" class="status-pill plot-index">1 / 4</span>
+                  <button id="plotNextButton" type="button" class="button button-muted plot-nav-button" aria-label="Show next plot">
+                    &gt;
+                  </button>
+                </div>
+              </div>
+
+              <p id="plotScope" class="plot-scope">Field section 1 of 4 in the Soil to Soul land workspace.</p>
+
+              <div class="plot-metrics">
+                <article>
+                  <span>Approx. area</span>
+                  <strong id="plotArea">6 biga | 3,804.69 m²</strong>
+                </article>
+                <article>
+                  <span>Current state</span>
+                  <strong id="plotState">Survey mapped</strong>
+                </article>
+              </div>
+
+              <div class="plot-details-shell">
+                <div class="plot-details-head">
+                  <p class="eyebrow">Selected plot details</p>
+                  <span class="status-pill status-live">Operations view</span>
+                </div>
+
+                <div class="plot-details">
+                  <div>
+                    <span class="plot-label">Present condition</span>
+                    <p id="plotCondition">This section sits inside the actual measured 24 biga farm parcel and is ready for plot-wise soil, crop, irrigation, and organic practice records.</p>
+                  </div>
+                  <div>
+                    <span class="plot-label">Current cycle focus</span>
+                    <p id="plotCycle">The plot is defined as one independent 6 biga cycle so each section can carry its own crop plan, growth updates, and harvest story.</p>
+                  </div>
+                  <div>
+                    <span class="plot-label">What the workspace will show here</span>
+                    <p id="plotWebsite">Section-wise dimensions, local biga measurement, crop cycle, soil health notes, field photos, and sensor-linked updates.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="workspace-notes">
+      <div class="container ops-grid">
+        <article class="ops-card">
+          <p class="eyebrow">Planning use</p>
+          <h3>What this page is for</h3>
+          <p>Use this page to think in sections, assign crops plot by plot, and keep operations records separate from the public marketing website.</p>
+        </article>
+        <article class="ops-card">
+          <p class="eyebrow">Next data to add</p>
+          <h3>Best next details</h3>
+          <p>Soil type, current crop status, water access, section photos, irrigation history, compost logs, and actual section-specific measurements if they differ.</p>
+        </article>
+        <article class="ops-card">
+          <p class="eyebrow">Long-term use</p>
+          <h3>How this can evolve</h3>
+          <p>This workspace can later become your internal farm operations dashboard with sensor feeds, crop plans, harvest notes, labor planning, and batch mapping.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-shell">
+      <div>
+        <strong>Soil to Soul Land Workspace</strong>
+        <p>Private-style operations and planning surface for the measured farm parcel.</p>
+      </div>
+      <p>Rangpur, Shilarpur district, Bulandshahr, Uttar Pradesh</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
