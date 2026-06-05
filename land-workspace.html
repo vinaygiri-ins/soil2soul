@@ -166,12 +166,40 @@
                 <span class="plot-label">Project heading</span>
                 <h3 id="activeProjectTitle">No active project yet</h3>
                 <p id="activeProjectSummary">Set one project name for this selected plot so all soil, crop, and produce notes stay grouped under that project.</p>
+                <div class="project-context-preview">
+                  <article class="project-context-chip">
+                    <span>Intention</span>
+                    <strong id="activeProjectIntent">Not set yet</strong>
+                  </article>
+                  <article class="project-context-chip">
+                    <span>Latitude</span>
+                    <strong id="activeProjectLatitude">Not set yet</strong>
+                  </article>
+                  <article class="project-context-chip">
+                    <span>Longitude</span>
+                    <strong id="activeProjectLongitude">Not set yet</strong>
+                  </article>
+                </div>
               </div>
               <div class="project-heading-actions">
                 <label class="project-heading-input">
                   <span>Project name</span>
                   <input id="projectNameInput" type="text" placeholder="Example: Kharif 2026 organic okra cycle">
                 </label>
+                <label class="project-heading-input">
+                  <span>Project intention</span>
+                  <textarea id="projectIntentInput" rows="4" placeholder="Example: Fix soil with dhaicha, improve organic matter, and prepare this plot for the next crop cycle"></textarea>
+                </label>
+                <div class="project-heading-coordinates">
+                  <label class="project-heading-input">
+                    <span>Latitude</span>
+                    <input id="projectLatitudeInput" type="text" inputmode="decimal" placeholder="Example: 28.40">
+                  </label>
+                  <label class="project-heading-input">
+                    <span>Longitude</span>
+                    <input id="projectLongitudeInput" type="text" inputmode="decimal" placeholder="Example: 77.84">
+                  </label>
+                </div>
                 <button id="saveProjectNameButton" class="button" type="button">Set project heading</button>
               </div>
             </div>

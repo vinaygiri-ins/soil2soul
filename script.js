@@ -9,6 +9,9 @@ const generateAiParcelButton = document.getElementById("generateAiParcelButton")
 const noteSaveButtons = document.querySelectorAll("[data-note-save]");
 const noteToggleButtons = document.querySelectorAll("[data-note-toggle]");
 const projectNameInput = document.getElementById("projectNameInput");
+const projectIntentInput = document.getElementById("projectIntentInput");
+const projectLatitudeInput = document.getElementById("projectLatitudeInput");
+const projectLongitudeInput = document.getElementById("projectLongitudeInput");
 const saveProjectNameButton = document.getElementById("saveProjectNameButton");
 
 if (navToggle && siteNav) {
@@ -142,7 +145,7 @@ const plotContent = {
 
 const plotOrder = ["D", "A", "C", "B"];
 let activePlotKey = "D";
-let activeProjectName = "";
+let activeProject = null;
 const noteTypeConfig = {
   soil: {
     inputId: "soilNoteInput",
@@ -182,16 +185,45 @@ function getProjectKey(projectName) {
   return slug || "project-pending";
 }
 
-function getNoteStorageKey(plotKey, noteType, projectName = activeProjectName) {
+function createProjectRecord(projectName, intention = "", latitude = "", longitude = "") {
+  return {
+    name: projectName.trim(),
+    intention: intention.trim(),
+    latitude: latitude.trim(),
+    longitude: longitude.trim()
+  };
+}
+
+function getNoteStorageKey(plotKey, noteType, projectName = activeProject?.name || "") {
   return `soil2soul:plot-notes:${plotKey}:${getProjectKey(projectName)}:${noteType}`;
 }
 
-function readStoredProjectName(plotKey) {
-  return window.localStorage.getItem(getProjectStorageKey(plotKey)) || "";
+function readStoredProject(plotKey) {
+  try {
+    const raw = window.localStorage.getItem(getProjectStorageKey(plotKey));
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw);
+
+    if (parsed && typeof parsed === "object" && typeof parsed.name === "string") {
+      return createProjectRecord(parsed.name, parsed.intention || "", parsed.latitude || "", parsed.longitude || "");
+    }
+
+    if (typeof parsed === "string") {
+      return createProjectRecord(parsed);
+    }
+
+    return null;
+  } catch {
+    const legacyValue = window.localStorage.getItem(getProjectStorageKey(plotKey));
+    return legacyValue ? createProjectRecord(legacyValue) : null;
+  }
 }
 
-function writeStoredProjectName(plotKey, projectName) {
-  window.localStorage.setItem(getProjectStorageKey(plotKey), projectName);
+function writeStoredProject(plotKey, project) {
+  window.localStorage.setItem(getProjectStorageKey(plotKey), JSON.stringify(project));
 }
 
 function updateProjectHeadingUi() {
@@ -199,24 +231,48 @@ function updateProjectHeadingUi() {
   const activeProjectSummary = document.getElementById("activeProjectSummary");
   const projectPlotPill = document.getElementById("projectPlotPill");
   const projectKeyPill = document.getElementById("projectKeyPill");
+  const activeProjectIntent = document.getElementById("activeProjectIntent");
+  const activeProjectLatitude = document.getElementById("activeProjectLatitude");
+  const activeProjectLongitude = document.getElementById("activeProjectLongitude");
 
   if (projectNameInput) {
-    projectNameInput.value = activeProjectName;
+    projectNameInput.value = activeProject?.name || "";
+  }
+
+  if (projectIntentInput) {
+    projectIntentInput.value = activeProject?.intention || "";
+  }
+
+  if (projectLatitudeInput) {
+    projectLatitudeInput.value = activeProject?.latitude || "";
+  }
+
+  if (projectLongitudeInput) {
+    projectLongitudeInput.value = activeProject?.longitude || "";
   }
 
   if (projectPlotPill) {
     projectPlotPill.textContent = plotContent[activePlotKey]?.title || `Plot ${activePlotKey}`;
   }
 
-  if (activeProjectName) {
+  if (activeProject?.name) {
     if (activeProjectTitle) {
-      activeProjectTitle.textContent = activeProjectName;
+      activeProjectTitle.textContent = activeProject.name;
     }
     if (activeProjectSummary) {
-      activeProjectSummary.textContent = `All soil, crop, and produce notes for ${plotContent[activePlotKey].title} are being grouped under this project heading for later review and AI assessment.`;
+      activeProjectSummary.textContent = `All soil, crop, and produce notes for ${plotContent[activePlotKey].title} are being grouped under this project heading for later review and AI assessment, along with the objective and coordinates for local conditions.`;
     }
     if (projectKeyPill) {
-      projectKeyPill.textContent = `Project key: ${getProjectKey(activeProjectName)}`;
+      projectKeyPill.textContent = `Project key: ${getProjectKey(activeProject.name)}`;
+    }
+    if (activeProjectIntent) {
+      activeProjectIntent.textContent = activeProject.intention || "Not set yet";
+    }
+    if (activeProjectLatitude) {
+      activeProjectLatitude.textContent = activeProject.latitude || "Not set yet";
+    }
+    if (activeProjectLongitude) {
+      activeProjectLongitude.textContent = activeProject.longitude || "Not set yet";
     }
     return;
   }
@@ -230,10 +286,19 @@ function updateProjectHeadingUi() {
   if (projectKeyPill) {
     projectKeyPill.textContent = "Project key pending";
   }
+  if (activeProjectIntent) {
+    activeProjectIntent.textContent = "Not set yet";
+  }
+  if (activeProjectLatitude) {
+    activeProjectLatitude.textContent = "Not set yet";
+  }
+  if (activeProjectLongitude) {
+    activeProjectLongitude.textContent = "Not set yet";
+  }
 }
 
-function setActiveProjectName(projectName) {
-  activeProjectName = projectName.trim();
+function setActiveProject(project) {
+  activeProject = project && project.name ? project : null;
   updateProjectHeadingUi();
   renderAllNoteHistories(activePlotKey);
 }
@@ -281,19 +346,19 @@ function renderNoteHistory(plotKey, noteType) {
   const noteLabel = noteType === "land" ? "crop" : noteType;
 
   if (notes.length === 0) {
-    historyElement.innerHTML = `<div class="note-history-empty">${activeProjectName ? `${config.emptyMessage} under ${escapeHtml(activeProjectName)}.` : "Set a project heading first, then start saving notes."}</div>`;
-    statusElement.textContent = activeProjectName
-      ? `No ${noteLabel} note saved yet for ${plotContent[plotKey].title} under ${activeProjectName}.`
+    historyElement.innerHTML = `<div class="note-history-empty">${activeProject?.name ? `${config.emptyMessage} under ${escapeHtml(activeProject.name)}.` : "Set a project heading first, then start saving notes."}</div>`;
+    statusElement.textContent = activeProject?.name
+      ? `No ${noteLabel} note saved yet for ${plotContent[plotKey].title} under ${activeProject.name}.`
       : `Set a project heading for ${plotContent[plotKey].title} before saving ${noteLabel} notes.`;
     return;
   }
 
-  statusElement.textContent = `Latest ${noteLabel} note saved on ${formatTimestamp(notes[0].timestamp)} for ${plotContent[plotKey].title} under ${activeProjectName}.`;
+  statusElement.textContent = `Latest ${noteLabel} note saved on ${formatTimestamp(notes[0].timestamp)} for ${plotContent[plotKey].title} under ${activeProject?.name || "this project"}.`;
   historyElement.innerHTML = notes
     .map((note) => `
       <article class="note-history-entry">
         <span class="note-history-meta">${formatTimestamp(note.timestamp)}</span>
-        <strong class="note-history-project">${escapeHtml(note.projectName || activeProjectName)}</strong>
+        <strong class="note-history-project">${escapeHtml(note.projectName || activeProject?.name || "")}</strong>
         <p>${escapeHtml(note.text)}</p>
       </article>
     `)
@@ -306,13 +371,16 @@ function renderAllNoteHistories(plotKey) {
   });
 }
 
-function getProjectNoteBundle(plotKey, projectName = activeProjectName) {
-  if (!projectName) {
+function getProjectNoteBundle(plotKey, project = activeProject) {
+  if (!project?.name) {
     return null;
   }
 
   return {
-    projectName,
+    projectName: project.name,
+    intention: project.intention,
+    latitude: project.latitude,
+    longitude: project.longitude,
     plot: plotContent[plotKey]?.title || plotKey,
     notes: {
       soil: readPlotNotes(plotKey, "soil"),
@@ -380,7 +448,7 @@ function updatePlotPanel(plotKey) {
   }
 
   activePlotKey = plotKey;
-  activeProjectName = readStoredProjectName(plotKey);
+  activeProject = readStoredProject(plotKey);
 
   plotTitle.textContent = plot.title;
   plotPosition.textContent = plot.position;
@@ -493,7 +561,7 @@ if (noteSaveButtons.length > 0) {
       const text = input.value.trim();
       const statusElement = document.getElementById(config.statusId);
 
-      if (!activeProjectName) {
+      if (!activeProject?.name) {
         if (statusElement) {
           statusElement.textContent = `Set a project heading before saving ${noteLabel} notes.`;
         }
@@ -515,7 +583,7 @@ if (noteSaveButtons.length > 0) {
         {
           text,
           timestamp: new Date().toISOString(),
-          projectName: activeProjectName
+          projectName: activeProject.name
         },
         ...existingNotes
       ];
@@ -558,6 +626,9 @@ if (noteToggleButtons.length > 0) {
 if (saveProjectNameButton) {
   saveProjectNameButton.addEventListener("click", () => {
     const projectName = projectNameInput?.value.trim() || "";
+    const projectIntention = projectIntentInput?.value.trim() || "";
+    const projectLatitude = projectLatitudeInput?.value.trim() || "";
+    const projectLongitude = projectLongitudeInput?.value.trim() || "";
     const activeProjectSummary = document.getElementById("activeProjectSummary");
 
     if (!projectName) {
@@ -568,18 +639,21 @@ if (saveProjectNameButton) {
       return;
     }
 
-    writeStoredProjectName(activePlotKey, projectName);
-    setActiveProjectName(projectName);
+    const project = createProjectRecord(projectName, projectIntention, projectLatitude, projectLongitude);
+    writeStoredProject(activePlotKey, project);
+    setActiveProject(project);
   });
 }
 
-if (projectNameInput) {
-  projectNameInput.addEventListener("keydown", (event) => {
+if (projectNameInput || projectIntentInput || projectLatitudeInput || projectLongitudeInput) {
+  [projectNameInput, projectIntentInput, projectLatitudeInput, projectLongitudeInput]
+    .filter(Boolean)
+    .forEach((input) => input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       saveProjectNameButton?.click();
     }
-  });
+    }));
 }
 
 updatePlotPanel(activePlotKey);

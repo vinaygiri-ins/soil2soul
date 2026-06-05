@@ -1058,6 +1058,35 @@ p {
   align-content: start;
 }
 
+.project-context-preview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.project-context-chip {
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.9rem;
+  background: rgba(244, 240, 232, 0.78);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.project-context-chip span {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soil);
+}
+
+.project-context-chip strong {
+  color: var(--leaf-deep);
+  line-height: 1.5;
+}
+
 .project-heading-input {
   display: grid;
   gap: 0.45rem;
@@ -1079,6 +1108,22 @@ p {
   border-radius: 0.9rem;
   background: rgba(255, 255, 255, 0.96);
   color: var(--ink);
+}
+
+.project-heading-input textarea {
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(44, 61, 44, 0.12);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink);
+}
+
+.project-heading-coordinates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
 }
 
 .project-heading-meta {
@@ -1347,6 +1392,11 @@ p {
   }
 
   .project-heading-card {
+    grid-template-columns: 1fr;
+  }
+
+  .project-context-preview,
+  .project-heading-coordinates {
     grid-template-columns: 1fr;
   }
 }
