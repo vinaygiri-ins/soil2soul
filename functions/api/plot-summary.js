@@ -212,6 +212,10 @@ function extractResponseText(data) {
       }
 
       for (const contentItem of item.content) {
+        if (contentItem?.type !== "output_text") {
+          continue;
+        }
+
         if (typeof contentItem?.text === "string" && contentItem.text.trim()) {
           textParts.push(contentItem.text.trim());
         }
