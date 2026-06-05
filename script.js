@@ -10,8 +10,6 @@ const noteSaveButtons = document.querySelectorAll("[data-note-save]");
 const noteToggleButtons = document.querySelectorAll("[data-note-toggle]");
 const projectNameInput = document.getElementById("projectNameInput");
 const projectIntentInput = document.getElementById("projectIntentInput");
-const projectLatitudeInput = document.getElementById("projectLatitudeInput");
-const projectLongitudeInput = document.getElementById("projectLongitudeInput");
 const saveProjectNameButton = document.getElementById("saveProjectNameButton");
 
 if (navToggle && siteNav) {
@@ -194,8 +192,8 @@ function createProjectRecord(projectName, intention = "", latitude = "", longitu
   return {
     name: projectName.trim(),
     intention: intention.trim(),
-    latitude: latitude.trim(),
-    longitude: longitude.trim()
+    latitude: defaultVillageContext.latitude,
+    longitude: defaultVillageContext.longitude
   };
 }
 
@@ -246,14 +244,6 @@ function updateProjectHeadingUi() {
 
   if (projectIntentInput) {
     projectIntentInput.value = activeProject?.intention || "";
-  }
-
-  if (projectLatitudeInput) {
-    projectLatitudeInput.value = activeProject?.latitude || defaultVillageContext.latitude;
-  }
-
-  if (projectLongitudeInput) {
-    projectLongitudeInput.value = activeProject?.longitude || defaultVillageContext.longitude;
   }
 
   if (projectPlotPill) {
@@ -632,8 +622,6 @@ if (saveProjectNameButton) {
   saveProjectNameButton.addEventListener("click", () => {
     const projectName = projectNameInput?.value.trim() || "";
     const projectIntention = projectIntentInput?.value.trim() || "";
-    const projectLatitude = projectLatitudeInput?.value.trim() || defaultVillageContext.latitude;
-    const projectLongitude = projectLongitudeInput?.value.trim() || defaultVillageContext.longitude;
     const activeProjectSummary = document.getElementById("activeProjectSummary");
 
     if (!projectName) {
@@ -644,14 +632,14 @@ if (saveProjectNameButton) {
       return;
     }
 
-    const project = createProjectRecord(projectName, projectIntention, projectLatitude, projectLongitude);
+    const project = createProjectRecord(projectName, projectIntention);
     writeStoredProject(activePlotKey, project);
     setActiveProject(project);
   });
 }
 
-if (projectNameInput || projectIntentInput || projectLatitudeInput || projectLongitudeInput) {
-  [projectNameInput, projectIntentInput, projectLatitudeInput, projectLongitudeInput]
+if (projectNameInput || projectIntentInput) {
+  [projectNameInput, projectIntentInput]
     .filter(Boolean)
     .forEach((input) => input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
