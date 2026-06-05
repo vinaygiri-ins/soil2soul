@@ -371,15 +371,11 @@ function updatePlotPanel(plotKey) {
   const plotArea = document.getElementById("plotArea");
   const plotState = document.getElementById("plotState");
   const plotCondition = document.getElementById("plotCondition");
-  const plotCycle = document.getElementById("plotCycle");
-  const plotWebsite = document.getElementById("plotWebsite");
-  const plotCurrent = document.getElementById("plotCurrent");
-  const plotTimeline = document.getElementById("plotTimeline");
   const plotIndex = document.getElementById("plotIndex");
   const aiPlotTitle = document.getElementById("aiPlotTitle");
   const aiParcelSummary = document.getElementById("aiParcelSummary");
 
-  if (!plotTitle || !plotPosition || !plotScope || !plotArea || !plotState || !plotCondition || !plotCycle || !plotWebsite || !plotCurrent || !plotTimeline || !plotIndex) {
+  if (!plotTitle || !plotPosition || !plotScope || !plotArea || !plotState || !plotCondition || !plotIndex) {
     return;
   }
 
@@ -392,11 +388,7 @@ function updatePlotPanel(plotKey) {
   plotArea.textContent = plot.area;
   plotState.textContent = plot.state;
   plotCondition.textContent = plot.condition;
-  plotCycle.textContent = plot.cycle;
-  plotWebsite.textContent = plot.website;
-  plotCurrent.textContent = plot.current;
   plotIndex.textContent = `${plotOrder.indexOf(plotKey) + 1} / ${plotOrder.length}`;
-  plotTimeline.innerHTML = plot.timeline.map((item) => `<li>${item}</li>`).join("");
 
   if (aiPlotTitle && aiParcelSummary) {
     aiPlotTitle.textContent = `AI note for ${plot.title}`;
