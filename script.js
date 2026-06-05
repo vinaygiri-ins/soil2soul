@@ -8,6 +8,8 @@ const plotNextButton = document.getElementById("plotNextButton");
 const generateAiParcelButton = document.getElementById("generateAiParcelButton");
 const noteSaveButtons = document.querySelectorAll("[data-note-save]");
 const noteToggleButtons = document.querySelectorAll("[data-note-toggle]");
+const projectNameInput = document.getElementById("projectNameInput");
+const saveProjectNameButton = document.getElementById("saveProjectNameButton");
 
 if (navToggle && siteNav) {
   navToggle.addEventListener("click", () => {
@@ -140,6 +142,7 @@ const plotContent = {
 
 const plotOrder = ["D", "A", "C", "B"];
 let activePlotKey = "D";
+let activeProjectName = "";
 const noteTypeConfig = {
   soil: {
     inputId: "soilNoteInput",
@@ -151,7 +154,7 @@ const noteTypeConfig = {
     inputId: "landNoteInput",
     historyId: "landNoteHistory",
     statusId: "landNoteStatus",
-    emptyMessage: "No land notes saved yet for this plot."
+    emptyMessage: "No crop notes saved yet for this plot."
   },
   produce: {
     inputId: "produceNoteInput",
@@ -161,8 +164,78 @@ const noteTypeConfig = {
   }
 };
 
-function getNoteStorageKey(plotKey, noteType) {
-  return `soil2soul:plot-notes:${plotKey}:${noteType}`;
+function getProjectStorageKey(plotKey) {
+  return `soil2soul:plot-project:${plotKey}`;
+}
+
+function slugifyProjectName(projectName) {
+  return projectName
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+}
+
+function getProjectKey(projectName) {
+  const slug = slugifyProjectName(projectName);
+  return slug || "project-pending";
+}
+
+function getNoteStorageKey(plotKey, noteType, projectName = activeProjectName) {
+  return `soil2soul:plot-notes:${plotKey}:${getProjectKey(projectName)}:${noteType}`;
+}
+
+function readStoredProjectName(plotKey) {
+  return window.localStorage.getItem(getProjectStorageKey(plotKey)) || "";
+}
+
+function writeStoredProjectName(plotKey, projectName) {
+  window.localStorage.setItem(getProjectStorageKey(plotKey), projectName);
+}
+
+function updateProjectHeadingUi() {
+  const activeProjectTitle = document.getElementById("activeProjectTitle");
+  const activeProjectSummary = document.getElementById("activeProjectSummary");
+  const projectPlotPill = document.getElementById("projectPlotPill");
+  const projectKeyPill = document.getElementById("projectKeyPill");
+
+  if (projectNameInput) {
+    projectNameInput.value = activeProjectName;
+  }
+
+  if (projectPlotPill) {
+    projectPlotPill.textContent = plotContent[activePlotKey]?.title || `Plot ${activePlotKey}`;
+  }
+
+  if (activeProjectName) {
+    if (activeProjectTitle) {
+      activeProjectTitle.textContent = activeProjectName;
+    }
+    if (activeProjectSummary) {
+      activeProjectSummary.textContent = `All soil, crop, and produce notes for ${plotContent[activePlotKey].title} are being grouped under this project heading for later review and AI assessment.`;
+    }
+    if (projectKeyPill) {
+      projectKeyPill.textContent = `Project key: ${getProjectKey(activeProjectName)}`;
+    }
+    return;
+  }
+
+  if (activeProjectTitle) {
+    activeProjectTitle.textContent = "No active project yet";
+  }
+  if (activeProjectSummary) {
+    activeProjectSummary.textContent = `Set one project name for ${plotContent[activePlotKey].title} so the soil, crop, and produce sections all stay under the same project heading.`;
+  }
+  if (projectKeyPill) {
+    projectKeyPill.textContent = "Project key pending";
+  }
+}
+
+function setActiveProjectName(projectName) {
+  activeProjectName = projectName.trim();
+  updateProjectHeadingUi();
+  renderAllNoteHistories(activePlotKey);
 }
 
 function readPlotNotes(plotKey, noteType) {
@@ -205,18 +278,22 @@ function renderNoteHistory(plotKey, noteType) {
   }
 
   const notes = readPlotNotes(plotKey, noteType);
+  const noteLabel = noteType === "land" ? "crop" : noteType;
 
   if (notes.length === 0) {
-    historyElement.innerHTML = `<div class="note-history-empty">${config.emptyMessage}</div>`;
-    statusElement.textContent = `No ${noteType} note saved yet for ${plotContent[plotKey].title}.`;
+    historyElement.innerHTML = `<div class="note-history-empty">${activeProjectName ? `${config.emptyMessage} under ${escapeHtml(activeProjectName)}.` : "Set a project heading first, then start saving notes."}</div>`;
+    statusElement.textContent = activeProjectName
+      ? `No ${noteLabel} note saved yet for ${plotContent[plotKey].title} under ${activeProjectName}.`
+      : `Set a project heading for ${plotContent[plotKey].title} before saving ${noteLabel} notes.`;
     return;
   }
 
-  statusElement.textContent = `Latest ${noteType} note saved on ${formatTimestamp(notes[0].timestamp)} for ${plotContent[plotKey].title}.`;
+  statusElement.textContent = `Latest ${noteLabel} note saved on ${formatTimestamp(notes[0].timestamp)} for ${plotContent[plotKey].title} under ${activeProjectName}.`;
   historyElement.innerHTML = notes
     .map((note) => `
       <article class="note-history-entry">
         <span class="note-history-meta">${formatTimestamp(note.timestamp)}</span>
+        <strong class="note-history-project">${escapeHtml(note.projectName || activeProjectName)}</strong>
         <p>${escapeHtml(note.text)}</p>
       </article>
     `)
@@ -227,6 +304,22 @@ function renderAllNoteHistories(plotKey) {
   Object.keys(noteTypeConfig).forEach((noteType) => {
     renderNoteHistory(plotKey, noteType);
   });
+}
+
+function getProjectNoteBundle(plotKey, projectName = activeProjectName) {
+  if (!projectName) {
+    return null;
+  }
+
+  return {
+    projectName,
+    plot: plotContent[plotKey]?.title || plotKey,
+    notes: {
+      soil: readPlotNotes(plotKey, "soil"),
+      crop: readPlotNotes(plotKey, "land"),
+      produce: readPlotNotes(plotKey, "produce")
+    }
+  };
 }
 
 function escapeHtml(value) {
@@ -250,7 +343,10 @@ async function requestAiPlotSummary(plotKey) {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ plot })
+    body: JSON.stringify({
+      plot,
+      project: getProjectNoteBundle(plotKey)
+    })
   });
 
   const data = await response.json();
@@ -288,6 +384,7 @@ function updatePlotPanel(plotKey) {
   }
 
   activePlotKey = plotKey;
+  activeProjectName = readStoredProjectName(plotKey);
 
   plotTitle.textContent = plot.title;
   plotPosition.textContent = plot.position;
@@ -321,6 +418,7 @@ function updatePlotPanel(plotKey) {
     }
   });
 
+  updateProjectHeadingUi();
   renderAllNoteHistories(plotKey);
 }
 
@@ -388,6 +486,7 @@ if (noteSaveButtons.length > 0) {
     button.addEventListener("click", () => {
       const noteType = button.dataset.noteSave;
       const config = noteTypeConfig[noteType];
+      const noteLabel = noteType === "land" ? "crop" : noteType;
 
       if (!config) {
         return;
@@ -400,11 +499,21 @@ if (noteSaveButtons.length > 0) {
       }
 
       const text = input.value.trim();
+      const statusElement = document.getElementById(config.statusId);
+
+      if (!activeProjectName) {
+        if (statusElement) {
+          statusElement.textContent = `Set a project heading before saving ${noteLabel} notes.`;
+        }
+        if (projectNameInput) {
+          projectNameInput.focus();
+        }
+        return;
+      }
 
       if (!text) {
-        const statusElement = document.getElementById(config.statusId);
         if (statusElement) {
-          statusElement.textContent = `Write a ${noteType} note before saving.`;
+          statusElement.textContent = `Write a ${noteLabel} note before saving.`;
         }
         return;
       }
@@ -413,7 +522,8 @@ if (noteSaveButtons.length > 0) {
       const nextNotes = [
         {
           text,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          projectName: activeProjectName
         },
         ...existingNotes
       ];
@@ -453,4 +563,31 @@ if (noteToggleButtons.length > 0) {
   });
 }
 
-renderAllNoteHistories(activePlotKey);
+if (saveProjectNameButton) {
+  saveProjectNameButton.addEventListener("click", () => {
+    const projectName = projectNameInput?.value.trim() || "";
+    const activeProjectSummary = document.getElementById("activeProjectSummary");
+
+    if (!projectName) {
+      if (activeProjectSummary) {
+        activeProjectSummary.textContent = `Write a project name for ${plotContent[activePlotKey].title} before grouping the notes.`;
+      }
+      projectNameInput?.focus();
+      return;
+    }
+
+    writeStoredProjectName(activePlotKey, projectName);
+    setActiveProjectName(projectName);
+  });
+}
+
+if (projectNameInput) {
+  projectNameInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      saveProjectNameButton?.click();
+    }
+  });
+}
+
+updatePlotPanel(activePlotKey);

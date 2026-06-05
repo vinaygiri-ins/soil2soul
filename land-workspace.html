@@ -179,6 +179,28 @@
 
         <article class="land-flow-card">
           <p class="eyebrow">Working notes with timestamps</p>
+          <div class="project-notes-shell">
+            <div class="project-heading-card">
+              <div>
+                <span class="plot-label">Project heading</span>
+                <h3 id="activeProjectTitle">No active project yet</h3>
+                <p id="activeProjectSummary">Set one project name for this selected plot so all soil, crop, and produce notes stay grouped under that project.</p>
+              </div>
+              <div class="project-heading-actions">
+                <label class="project-heading-input">
+                  <span>Project name</span>
+                  <input id="projectNameInput" type="text" placeholder="Example: Kharif 2026 organic okra cycle">
+                </label>
+                <button id="saveProjectNameButton" class="button" type="button">Set project heading</button>
+              </div>
+            </div>
+
+            <div class="project-heading-meta">
+              <span class="status-pill" id="projectPlotPill">Plot D</span>
+              <span class="status-pill" id="projectKeyPill">Project key pending</span>
+            </div>
+          </div>
+
           <div class="note-box-grid">
             <section class="note-box-card" data-note-type="soil">
               <div class="note-box-head">

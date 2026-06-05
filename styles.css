@@ -1028,6 +1028,65 @@ p {
   gap: 1rem;
 }
 
+.project-notes-shell {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.project-heading-card {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.project-heading-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.project-heading-card p {
+  margin: 0;
+}
+
+.project-heading-actions {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.project-heading-input {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.project-heading-input span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soil);
+}
+
+.project-heading-input input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(44, 61, 44, 0.12);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink);
+}
+
+.project-heading-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
 .note-box-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1124,6 +1183,13 @@ p {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--soil);
+}
+
+.note-history-project {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--leaf-deep);
+  font-size: 0.92rem;
 }
 
 .note-history-empty {
@@ -1277,6 +1343,10 @@ p {
   }
 
   .note-box-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-heading-card {
     grid-template-columns: 1fr;
   }
 }
