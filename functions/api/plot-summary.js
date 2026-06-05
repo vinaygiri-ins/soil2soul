@@ -30,7 +30,10 @@ export async function onRequestPost(context) {
         ok: false,
         mode: "fallback",
         error: `${providerLabel} API key is not configured in Cloudflare Pages environment variables.`,
-        summary: `${plot.aiSummary} This is still the local fallback because the ${providerLabel} API key has not been added in deployment settings yet.`
+        summary: buildFallbackSummary(
+          plot,
+          `This is still the local fallback because the ${providerLabel} API key has not been added in deployment settings yet.`
+        )
       });
     }
 
@@ -63,15 +66,7 @@ export async function onRequestPost(context) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`
         },
-        body: JSON.stringify({
-          model,
-          input: actionPrompt,
-          text: {
-            format: {
-              type: "text"
-            }
-          }
-        })
+        body: JSON.stringify(buildResponsesRequest(model, actionPrompt))
       });
 
       if (!actionResponse.ok) {
@@ -86,10 +81,10 @@ export async function onRequestPost(context) {
       }
 
       const actionData = await actionResponse.json();
-      const outputText = typeof actionData.output_text === "string" ? actionData.output_text.trim() : "";
+      const outputText = extractResponseText(actionData);
 
       try {
-        const parsedPlan = JSON.parse(outputText);
+        const parsedPlan = JSON.parse(extractJsonBlock(outputText));
         return json({
           ok: true,
           mode: providerConfig.mode,
@@ -126,15 +121,7 @@ export async function onRequestPost(context) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`
       },
-      body: JSON.stringify({
-        model,
-        input: prompt,
-        text: {
-          format: {
-            type: "text"
-          }
-        }
-      })
+      body: JSON.stringify(buildResponsesRequest(model, prompt))
     });
 
     if (!response.ok) {
@@ -144,14 +131,18 @@ export async function onRequestPost(context) {
         ok: false,
         mode: "fallback",
         error: `${providerLabel} request failed: ${errorText}`,
-        summary: `${plot.aiSummary} This is the local fallback because the ${providerLabel} request did not complete successfully.`
+        summary: buildFallbackSummary(
+          plot,
+          `This is the local fallback because the ${providerLabel} request did not complete successfully.`
+        )
       });
     }
 
     const data = await response.json();
-    const summary = typeof data.output_text === "string" && data.output_text.trim()
-      ? data.output_text.trim()
-      : `${plot.aiSummary} This is the local fallback because no text output was returned.`;
+    const responseText = extractResponseText(data);
+    const summary = responseText
+      ? responseText
+      : buildFallbackSummary(plot, "This is the local fallback because no text output was returned.");
 
     return json({
       ok: true,
@@ -166,6 +157,13 @@ export async function onRequestPost(context) {
       summary: "The AI route hit an unexpected issue, so the local plot note should be used instead."
     });
   }
+}
+
+function buildResponsesRequest(model, input) {
+  return {
+    model,
+    input
+  };
 }
 
 function json(payload, status = 200) {
@@ -198,6 +196,65 @@ function getProviderConfig(env) {
     providerLabel: "OpenAI",
     mode: "openai"
   };
+}
+
+function extractResponseText(data) {
+  if (typeof data?.output_text === "string" && data.output_text.trim()) {
+    return data.output_text.trim();
+  }
+
+  if (Array.isArray(data?.output)) {
+    const textParts = [];
+
+    for (const item of data.output) {
+      if (!Array.isArray(item?.content)) {
+        continue;
+      }
+
+      for (const contentItem of item.content) {
+        if (typeof contentItem?.text === "string" && contentItem.text.trim()) {
+          textParts.push(contentItem.text.trim());
+        }
+      }
+    }
+
+    if (textParts.length > 0) {
+      return textParts.join("\n").trim();
+    }
+  }
+
+  if (Array.isArray(data?.choices) && typeof data.choices[0]?.message?.content === "string") {
+    return data.choices[0].message.content.trim();
+  }
+
+  return "";
+}
+
+function extractJsonBlock(text) {
+  const trimmed = String(text || "").trim();
+
+  if (!trimmed) {
+    return "";
+  }
+
+  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fencedMatch?.[1]) {
+    return fencedMatch[1].trim();
+  }
+
+  const objectStart = trimmed.indexOf("{");
+  const objectEnd = trimmed.lastIndexOf("}");
+  if (objectStart !== -1 && objectEnd !== -1 && objectEnd > objectStart) {
+    return trimmed.slice(objectStart, objectEnd + 1);
+  }
+
+  return trimmed;
+}
+
+function buildFallbackSummary(plot, reason) {
+  const title = plot?.title || "This plot";
+  const state = plot?.state || "needs field review";
+  return `${title} is currently marked as ${state}. ${reason}`;
 }
 
 function stringifyNotes(notes) {
