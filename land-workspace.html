@@ -313,6 +313,51 @@
               this is where an OpenAI response would appear after your backend sends the plot data.
             </p>
           </div>
+
+          <div class="ai-action-planner">
+            <div class="ai-action-head">
+              <div>
+                <p class="eyebrow">AI action planner</p>
+                <h3>Next actions from the current project notes</h3>
+                <p>
+                  This planner reads the selected plot, the project intention, and the timestamped soil, crop, and produce notes,
+                  then suggests the next operational path in a more structured format.
+                </p>
+              </div>
+              <button id="generateAiActionPlanButton" class="button" type="button">Generate next actions</button>
+            </div>
+
+            <div class="ai-plan-grid">
+              <article class="ai-plan-card">
+                <span>Immediate action</span>
+                <p id="aiImmediateAction">Set a project heading and save at least one note in soil, crop, or produce to generate useful next actions.</p>
+              </article>
+              <article class="ai-plan-card">
+                <span>This week</span>
+                <p id="aiWeekAction">Once notes are added, this section will turn them into a short weekly focus.</p>
+              </article>
+              <article class="ai-plan-card">
+                <span>This month</span>
+                <p id="aiMonthAction">Monthly actions will appear here after the planner reads the latest project context.</p>
+              </article>
+              <article class="ai-plan-card">
+                <span>Things to monitor</span>
+                <p id="aiMonitorAction">The planner will highlight the conditions that need attention from the notes you save.</p>
+              </article>
+            </div>
+
+            <div class="ai-plan-timeline-card">
+              <div class="ai-output-head">
+                <strong>Suggested timeline</strong>
+                <span class="status-pill" id="aiPlanMode">Planner ready</span>
+              </div>
+              <ul id="aiPlanTimeline" class="plan-timeline">
+                <li>Add a project heading and intention for the selected plot.</li>
+                <li>Save current soil, crop, or produce notes with timestamps.</li>
+                <li>Run the planner to generate an action-oriented timeline.</li>
+              </ul>
+            </div>
+          </div>
         </article>
       </div>
     </section>

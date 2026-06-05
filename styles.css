@@ -1028,6 +1028,12 @@ p {
   gap: 1rem;
 }
 
+.ai-action-planner,
+.ai-plan-grid {
+  display: grid;
+  gap: 1rem;
+}
+
 .project-notes-shell {
   display: grid;
   gap: 0.9rem;
@@ -1254,12 +1260,27 @@ p {
   gap: 1rem;
 }
 
+.ai-action-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(44, 61, 44, 0.08);
+}
+
 .ai-ops-grid {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.ai-plan-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .ai-chip-card,
-.ai-output-card {
+.ai-output-card,
+.ai-plan-card,
+.ai-plan-timeline-card {
   padding: 1rem;
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.78);
@@ -1290,6 +1311,21 @@ p {
 }
 
 .ai-output-card p {
+  margin: 0;
+}
+
+.ai-plan-card span {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soil);
+}
+
+.ai-plan-card p,
+.ai-plan-timeline-card p {
   margin: 0;
 }
 
@@ -1385,6 +1421,7 @@ p {
   .faq-grid,
   .ops-grid,
   .ai-ops-grid,
+  .ai-plan-grid,
   .whole-land-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1434,6 +1471,7 @@ p {
   .faq-grid,
   .ops-grid,
   .ai-ops-grid,
+  .ai-plan-grid,
   .whole-land-grid,
   .stat-row,
   .plot-metrics {
@@ -1445,6 +1483,7 @@ p {
   }
 
   .ai-ops-head,
+  .ai-action-head,
   .ai-output-head,
   .note-box-head {
     flex-direction: column;

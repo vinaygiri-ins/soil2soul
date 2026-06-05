@@ -6,6 +6,7 @@ const plotChips = document.querySelectorAll("[data-plot-chip]");
 const plotPrevButton = document.getElementById("plotPrevButton");
 const plotNextButton = document.getElementById("plotNextButton");
 const generateAiParcelButton = document.getElementById("generateAiParcelButton");
+const generateAiActionPlanButton = document.getElementById("generateAiActionPlanButton");
 const noteSaveButtons = document.querySelectorAll("[data-note-save]");
 const noteToggleButtons = document.querySelectorAll("[data-note-toggle]");
 const projectNameInput = document.getElementById("projectNameInput");
@@ -385,6 +386,121 @@ function getProjectNoteBundle(plotKey, project = activeProject) {
   };
 }
 
+function getLatestNoteText(notes) {
+  return Array.isArray(notes) && notes.length > 0 ? notes[0].text.trim() : "";
+}
+
+function getProjectSignals(projectBundle) {
+  if (!projectBundle) {
+    return {
+      soil: "",
+      crop: "",
+      produce: "",
+      combined: "",
+      hasAnyNotes: false
+    };
+  }
+
+  const soil = getLatestNoteText(projectBundle.notes.soil);
+  const crop = getLatestNoteText(projectBundle.notes.crop);
+  const produce = getLatestNoteText(projectBundle.notes.produce);
+  const combined = [soil, crop, produce].filter(Boolean).join(" ").toLowerCase();
+
+  return {
+    soil,
+    crop,
+    produce,
+    combined,
+    hasAnyNotes: Boolean(soil || crop || produce)
+  };
+}
+
+function buildLocalActionPlan(plotKey) {
+  const plot = plotContent[plotKey];
+  const projectBundle = getProjectNoteBundle(plotKey);
+  const signals = getProjectSignals(projectBundle);
+
+  if (!plot || !projectBundle?.projectName) {
+    return {
+      mode: "local",
+      immediateAction: "Set a project heading first so the planner knows which objective and note stream it should use.",
+      weekAction: "Add at least one timestamped note in soil, crop, or produce so the planner has real field context.",
+      monthAction: "After a few note entries, use the planner again to start shaping a month-long working cycle for this plot.",
+      monitoring: "Monitor what is still missing first: soil condition, crop stage, and produce readiness.",
+      timeline: [
+        "Set the project heading and intention for the selected plot.",
+        "Save timestamped notes under soil, crop, and produce.",
+        "Run the planner again after the first round of field observations."
+      ]
+    };
+  }
+
+  if (!signals.hasAnyNotes) {
+    return {
+      mode: "local",
+      immediateAction: `Start recording the first field observations for ${projectBundle.projectName} in ${plot.title}.`,
+      weekAction: "Capture one clear note each for soil, crop, and produce so the next AI pass can compare conditions properly.",
+      monthAction: "Use the first month to build a consistent observation rhythm around field condition, irrigation, and crop progress.",
+      monitoring: "Monitor missing data first. Right now the planner does not yet have enough field evidence to recommend a stronger sequence.",
+      timeline: [
+        "Today: save the first soil note and describe texture, moisture, and preparation status.",
+        "This week: add crop and produce notes with visible condition or growth-stage detail.",
+        "This month: keep a regular log so the planner can recommend stronger actions."
+      ]
+    };
+  }
+
+  const mentionsMoistureStress = /dry|drought|moisture low|hard|crack|water stress/.test(signals.combined);
+  const mentionsPestStress = /pest|insect|fungus|disease|yellow|spot|wilt/.test(signals.combined);
+  const mentionsHarvest = /harvest|ready|mature|pack|produce ready|cutting/.test(signals.combined);
+  const mentionsSoilFix = /dhaicha|green manure|organic matter|soil fixing|nitrogen|compost/.test(signals.combined + " " + (projectBundle.intention || "").toLowerCase());
+
+  let immediateAction = `Review the latest notes for ${projectBundle.projectName} and convert them into one clear field task for ${plot.title}.`;
+  let weekAction = "This week, update the plot every time the field condition changes so the action plan can stay reality-based.";
+  let monthAction = "This month, keep the project moving through one clear cycle: field condition, response, observation, and adjustment.";
+  let monitoring = "Monitor moisture, plant response, and any shift in the condition mentioned in the latest notes.";
+  const timeline = [
+    "Day 1-2: review the latest soil, crop, and produce notes together before acting.",
+    "Day 3-7: execute one field response and log what changed after the intervention.",
+    "Week 2-4: keep the cycle consistent with fresh notes, especially after irrigation, weather changes, or visible crop shifts."
+  ];
+
+  if (mentionsSoilFix) {
+    immediateAction = "Prioritize the soil-improvement objective first and make sure the field action supports organic matter building before the next crop decision.";
+    weekAction = "This week, document how the soil-fixing work is progressing and whether the plot is moving toward better structure, cover, or organic activity.";
+    monthAction = "Use this month to complete the soil-restoration cycle cleanly, then assess whether the plot is ready for the next crop stage.";
+    monitoring = "Monitor decomposition progress, soil moisture balance, and whether the field surface is improving after the soil-fixing step.";
+  }
+
+  if (mentionsMoistureStress) {
+    immediateAction = "Check field moisture first before taking any other major action, because the latest notes suggest water stress or drying pressure.";
+    weekAction = "This week, align irrigation timing with note-taking so you can compare the field condition before and after watering.";
+    monitoring = "Monitor soil moisture, visible plant recovery, and whether the stressed areas stay localized or spread.";
+  }
+
+  if (mentionsPestStress) {
+    immediateAction = "Inspect the plot closely for stress signs and isolate whether the issue is pest, disease, or nutrient-related before intervening.";
+    weekAction = "This week, document where the stress is appearing and whether it is increasing, stabilizing, or reducing.";
+    monitoring = "Monitor leaf color, pest spread, wilt patterns, and how quickly the crop responds after any organic intervention.";
+  }
+
+  if (mentionsHarvest) {
+    immediateAction = "Prepare the plot for harvest-oriented decisions and make sure produce-condition notes stay specific and frequent.";
+    weekAction = "This week, align maturity checks, expected picking time, and handling notes so harvest does not become reactive.";
+    monthAction = "Use this month to manage readiness, harvesting, and post-harvest planning in one connected flow.";
+    monitoring = "Monitor maturity consistency, visible quality, and any produce loss risk before cutting or packing.";
+  }
+
+  return {
+    mode: "local",
+    immediateAction,
+    weekAction,
+    monthAction,
+    monitoring,
+    timeline
+  };
+}
+
 function escapeHtml(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -419,6 +535,55 @@ async function requestAiPlotSummary(plotKey) {
   }
 
   return data;
+}
+
+async function requestAiActionPlan(plotKey) {
+  const plot = plotContent[plotKey];
+  const project = getProjectNoteBundle(plotKey);
+
+  if (!plot || !project) {
+    throw new Error("Project context is missing for action planning.");
+  }
+
+  const response = await fetch("/api/plot-summary", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      task: "action-plan",
+      plot,
+      project
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.error || "Failed to generate action plan.");
+  }
+
+  return data;
+}
+
+function renderActionPlan(plan) {
+  const aiImmediateAction = document.getElementById("aiImmediateAction");
+  const aiWeekAction = document.getElementById("aiWeekAction");
+  const aiMonthAction = document.getElementById("aiMonthAction");
+  const aiMonitorAction = document.getElementById("aiMonitorAction");
+  const aiPlanTimeline = document.getElementById("aiPlanTimeline");
+  const aiPlanMode = document.getElementById("aiPlanMode");
+
+  if (!aiImmediateAction || !aiWeekAction || !aiMonthAction || !aiMonitorAction || !aiPlanTimeline || !aiPlanMode) {
+    return;
+  }
+
+  aiImmediateAction.textContent = plan.immediateAction;
+  aiWeekAction.textContent = plan.weekAction;
+  aiMonthAction.textContent = plan.monthAction;
+  aiMonitorAction.textContent = plan.monitoring;
+  aiPlanTimeline.innerHTML = plan.timeline.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+  aiPlanMode.textContent = plan.mode === "openai" ? "OpenAI plan" : "Local planner";
 }
 
 function updatePlotPanel(plotKey) {
@@ -457,6 +622,8 @@ function updatePlotPanel(plotKey) {
     aiPlotTitle.textContent = `AI note for ${plot.title}`;
     aiParcelSummary.textContent = `Click "Generate Plot Insight" to create a short AI-style summary for ${plot.title}. In the real version, this is where a cached OpenAI response would appear.`;
   }
+
+  renderActionPlan(buildLocalActionPlan(plotKey));
 
   plotButtons.forEach((button) => {
     const isActive = button.dataset.plot === plotKey;
@@ -532,6 +699,28 @@ if (generateAiParcelButton) {
     } finally {
       generateAiParcelButton.disabled = false;
       generateAiParcelButton.textContent = "Generate Plot Insight";
+    }
+  });
+}
+
+if (generateAiActionPlanButton) {
+  generateAiActionPlanButton.addEventListener("click", async () => {
+    if (!activeProject?.name) {
+      renderActionPlan(buildLocalActionPlan(activePlotKey));
+      return;
+    }
+
+    generateAiActionPlanButton.disabled = true;
+    generateAiActionPlanButton.textContent = "Planning...";
+
+    try {
+      const result = await requestAiActionPlan(activePlotKey);
+      renderActionPlan(result.plan || buildLocalActionPlan(activePlotKey));
+    } catch {
+      renderActionPlan(buildLocalActionPlan(activePlotKey));
+    } finally {
+      generateAiActionPlanButton.disabled = false;
+      generateAiActionPlanButton.textContent = "Generate next actions";
     }
   });
 }

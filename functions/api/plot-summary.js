@@ -1,7 +1,7 @@
 export async function onRequestPost(context) {
   try {
     const requestBody = await context.request.json();
-    const { plot } = requestBody || {};
+    const { plot, project, task } = requestBody || {};
 
     if (!plot || typeof plot !== "object") {
       return json(
@@ -17,12 +17,92 @@ export async function onRequestPost(context) {
     const model = context.env.OPENAI_MODEL || "gpt-5.4-mini";
 
     if (!apiKey) {
+      if (task === "action-plan") {
+        return json({
+          ok: false,
+          mode: "fallback",
+          error: "OPENAI_API_KEY is not configured in Cloudflare Pages environment variables.",
+          plan: null
+        });
+      }
+
       return json({
         ok: false,
         mode: "fallback",
         error: "OPENAI_API_KEY is not configured in Cloudflare Pages environment variables.",
         summary: `${plot.aiSummary} This is still the local fallback because the OpenAI API key has not been added in deployment settings yet.`
       });
+    }
+
+    if (task === "action-plan") {
+      const actionPrompt = [
+        `You are a concise farm operations assistant for an organic farming project.`,
+        `Return valid JSON only.`,
+        `Create a practical action plan from the current project notes.`,
+        `Keys required: immediateAction, weekAction, monthAction, monitoring, timeline.`,
+        `timeline must be an array of exactly 3 short strings.`,
+        `Use simple language and make the advice practical, operational, and organic-farming aware.`,
+        ``,
+        `Plot: ${plot.title}`,
+        `Position: ${plot.position}`,
+        `Area: ${plot.area}`,
+        `State: ${plot.state}`,
+        `Condition: ${plot.condition}`,
+        `Project name: ${project?.projectName || "Not set"}`,
+        `Project intention: ${project?.intention || "Not set"}`,
+        `Latitude: ${project?.latitude || "Not set"}`,
+        `Longitude: ${project?.longitude || "Not set"}`,
+        `Latest soil notes: ${stringifyNotes(project?.notes?.soil)}`,
+        `Latest crop notes: ${stringifyNotes(project?.notes?.crop)}`,
+        `Latest produce notes: ${stringifyNotes(project?.notes?.produce)}`
+      ].join("\n");
+
+      const actionResponse = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          input: actionPrompt,
+          text: {
+            format: {
+              type: "text"
+            }
+          }
+        })
+      });
+
+      if (!actionResponse.ok) {
+        const errorText = await actionResponse.text();
+
+        return json({
+          ok: false,
+          mode: "fallback",
+          error: `OpenAI request failed: ${errorText}`,
+          plan: null
+        });
+      }
+
+      const actionData = await actionResponse.json();
+      const outputText = typeof actionData.output_text === "string" ? actionData.output_text.trim() : "";
+
+      try {
+        const parsedPlan = JSON.parse(outputText);
+        return json({
+          ok: true,
+          mode: "openai",
+          plan: normalizePlan(parsedPlan)
+        });
+      } catch {
+        return json({
+          ok: false,
+          mode: "fallback",
+          error: "OpenAI returned action text that could not be parsed as JSON.",
+          plan: null
+        });
+      }
     }
 
     const prompt = [
@@ -96,4 +176,31 @@ function json(payload, status = 200) {
       "Cache-Control": "no-store"
     }
   });
+}
+
+function stringifyNotes(notes) {
+  if (!Array.isArray(notes) || notes.length === 0) {
+    return "No notes yet.";
+  }
+
+  return notes
+    .slice(0, 3)
+    .map((note) => `${note.timestamp || "unknown time"}: ${note.text || ""}`)
+    .join(" | ");
+}
+
+function normalizePlan(plan) {
+  return {
+    immediateAction: String(plan?.immediateAction || "No immediate action returned."),
+    weekAction: String(plan?.weekAction || "No weekly action returned."),
+    monthAction: String(plan?.monthAction || "No monthly action returned."),
+    monitoring: String(plan?.monitoring || "No monitoring note returned."),
+    timeline: Array.isArray(plan?.timeline) && plan.timeline.length > 0
+      ? plan.timeline.slice(0, 3).map((item) => String(item))
+      : [
+          "Review the current project notes.",
+          "Take the next practical field action.",
+          "Observe the result and log it again."
+        ]
+  };
 }
