@@ -1028,6 +1028,95 @@ p {
   gap: 1rem;
 }
 
+.note-box-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.note-box-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.note-box-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.note-box-head h3 {
+  margin-bottom: 0.4rem;
+}
+
+.note-box-head p,
+.note-save-status {
+  margin: 0;
+}
+
+.note-input-wrap {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.note-input-wrap span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soil);
+}
+
+.note-input-wrap textarea {
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(44, 61, 44, 0.12);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink);
+}
+
+.note-box-actions {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.note-history-panel {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.note-history-entry {
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.9rem;
+  background: rgba(244, 240, 232, 0.78);
+  border: 1px solid rgba(44, 61, 44, 0.08);
+}
+
+.note-history-meta {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--soil);
+}
+
+.note-history-empty {
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.9rem;
+  background: rgba(244, 240, 232, 0.58);
+  border: 1px dashed rgba(44, 61, 44, 0.16);
+  color: var(--muted);
+}
+
 .ai-ops-head {
   display: flex;
   align-items: flex-start;
@@ -1166,6 +1255,7 @@ p {
   .faq-grid,
   .ops-grid,
   .ai-ops-grid,
+  .note-box-grid,
   .whole-land-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1203,6 +1293,7 @@ p {
   .faq-grid,
   .ops-grid,
   .ai-ops-grid,
+  .note-box-grid,
   .whole-land-grid,
   .stat-row,
   .plot-metrics {
@@ -1210,7 +1301,8 @@ p {
   }
 
   .ai-ops-head,
-  .ai-output-head {
+  .ai-output-head,
+  .note-box-head {
     flex-direction: column;
   }
 

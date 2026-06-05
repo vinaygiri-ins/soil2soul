@@ -176,6 +176,74 @@
             </div>
           </div>
         </article>
+
+        <article class="land-flow-card">
+          <p class="eyebrow">Working notes with timestamps</p>
+          <div class="note-box-grid">
+            <section class="note-box-card" data-note-type="soil">
+              <div class="note-box-head">
+                <div>
+                  <h3>Current state of soil</h3>
+                  <p>Save field observations for soil health, texture, moisture, smell, or preparation condition.</p>
+                </div>
+                <button class="button button-muted note-history-toggle" type="button" data-note-toggle="soil" aria-expanded="false">
+                  Show history
+                </button>
+              </div>
+              <label class="note-input-wrap">
+                <span>Add soil note</span>
+                <textarea id="soilNoteInput" rows="4" placeholder="Write the current soil condition for this selected plot"></textarea>
+              </label>
+              <div class="note-box-actions">
+                <button class="button note-save-button" type="button" data-note-save="soil">Save soil note</button>
+                <p id="soilNoteStatus" class="note-save-status">No soil note saved yet for this selected plot.</p>
+              </div>
+              <div id="soilNoteHistory" class="note-history-panel hidden" data-note-history="soil"></div>
+            </section>
+
+            <section class="note-box-card" data-note-type="land">
+              <div class="note-box-head">
+                <div>
+                  <h3>Current state of land</h3>
+                  <p>Track land condition such as leveling, water flow, section readiness, access, or operational issues.</p>
+                </div>
+                <button class="button button-muted note-history-toggle" type="button" data-note-toggle="land" aria-expanded="false">
+                  Show history
+                </button>
+              </div>
+              <label class="note-input-wrap">
+                <span>Add land note</span>
+                <textarea id="landNoteInput" rows="4" placeholder="Write the current land condition for this selected plot"></textarea>
+              </label>
+              <div class="note-box-actions">
+                <button class="button note-save-button" type="button" data-note-save="land">Save land note</button>
+                <p id="landNoteStatus" class="note-save-status">No land note saved yet for this selected plot.</p>
+              </div>
+              <div id="landNoteHistory" class="note-history-panel hidden" data-note-history="land"></div>
+            </section>
+
+            <section class="note-box-card" data-note-type="produce">
+              <div class="note-box-head">
+                <div>
+                  <h3>Current state of produce</h3>
+                  <p>Log crop or produce condition like growth stage, visible health, harvest readiness, or quality notes.</p>
+                </div>
+                <button class="button button-muted note-history-toggle" type="button" data-note-toggle="produce" aria-expanded="false">
+                  Show history
+                </button>
+              </div>
+              <label class="note-input-wrap">
+                <span>Add produce note</span>
+                <textarea id="produceNoteInput" rows="4" placeholder="Write the current produce or crop condition for this selected plot"></textarea>
+              </label>
+              <div class="note-box-actions">
+                <button class="button note-save-button" type="button" data-note-save="produce">Save produce note</button>
+                <p id="produceNoteStatus" class="note-save-status">No produce note saved yet for this selected plot.</p>
+              </div>
+              <div id="produceNoteHistory" class="note-history-panel hidden" data-note-history="produce"></div>
+            </section>
+          </div>
+        </article>
       </div>
     </section>
 

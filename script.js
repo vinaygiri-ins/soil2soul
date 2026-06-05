@@ -6,6 +6,8 @@ const plotChips = document.querySelectorAll("[data-plot-chip]");
 const plotPrevButton = document.getElementById("plotPrevButton");
 const plotNextButton = document.getElementById("plotNextButton");
 const generateAiParcelButton = document.getElementById("generateAiParcelButton");
+const noteSaveButtons = document.querySelectorAll("[data-note-save]");
+const noteToggleButtons = document.querySelectorAll("[data-note-toggle]");
 
 if (navToggle && siteNav) {
   navToggle.addEventListener("click", () => {
@@ -138,6 +140,103 @@ const plotContent = {
 
 const plotOrder = ["D", "A", "C", "B"];
 let activePlotKey = "D";
+const noteTypeConfig = {
+  soil: {
+    inputId: "soilNoteInput",
+    historyId: "soilNoteHistory",
+    statusId: "soilNoteStatus",
+    emptyMessage: "No soil notes saved yet for this plot."
+  },
+  land: {
+    inputId: "landNoteInput",
+    historyId: "landNoteHistory",
+    statusId: "landNoteStatus",
+    emptyMessage: "No land notes saved yet for this plot."
+  },
+  produce: {
+    inputId: "produceNoteInput",
+    historyId: "produceNoteHistory",
+    statusId: "produceNoteStatus",
+    emptyMessage: "No produce notes saved yet for this plot."
+  }
+};
+
+function getNoteStorageKey(plotKey, noteType) {
+  return `soil2soul:plot-notes:${plotKey}:${noteType}`;
+}
+
+function readPlotNotes(plotKey, noteType) {
+  try {
+    const raw = window.localStorage.getItem(getNoteStorageKey(plotKey, noteType));
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writePlotNotes(plotKey, noteType, notes) {
+  window.localStorage.setItem(getNoteStorageKey(plotKey, noteType), JSON.stringify(notes));
+}
+
+function formatTimestamp(isoString) {
+  const date = new Date(isoString);
+  return date.toLocaleString("en-IN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function renderNoteHistory(plotKey, noteType) {
+  const config = noteTypeConfig[noteType];
+
+  if (!config) {
+    return;
+  }
+
+  const historyElement = document.getElementById(config.historyId);
+  const statusElement = document.getElementById(config.statusId);
+
+  if (!historyElement || !statusElement) {
+    return;
+  }
+
+  const notes = readPlotNotes(plotKey, noteType);
+
+  if (notes.length === 0) {
+    historyElement.innerHTML = `<div class="note-history-empty">${config.emptyMessage}</div>`;
+    statusElement.textContent = `No ${noteType} note saved yet for ${plotContent[plotKey].title}.`;
+    return;
+  }
+
+  statusElement.textContent = `Latest ${noteType} note saved on ${formatTimestamp(notes[0].timestamp)} for ${plotContent[plotKey].title}.`;
+  historyElement.innerHTML = notes
+    .map((note) => `
+      <article class="note-history-entry">
+        <span class="note-history-meta">${formatTimestamp(note.timestamp)}</span>
+        <p>${escapeHtml(note.text)}</p>
+      </article>
+    `)
+    .join("");
+}
+
+function renderAllNoteHistories(plotKey) {
+  Object.keys(noteTypeConfig).forEach((noteType) => {
+    renderNoteHistory(plotKey, noteType);
+  });
+}
+
+function escapeHtml(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
 async function requestAiPlotSummary(plotKey) {
   const plot = plotContent[plotKey];
@@ -221,6 +320,8 @@ function updatePlotPanel(plotKey) {
       button.setAttribute("aria-selected", String(isActive));
     }
   });
+
+  renderAllNoteHistories(plotKey);
 }
 
 if (plotButtons.length > 0) {
@@ -281,3 +382,75 @@ if (generateAiParcelButton) {
     }
   });
 }
+
+if (noteSaveButtons.length > 0) {
+  noteSaveButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const noteType = button.dataset.noteSave;
+      const config = noteTypeConfig[noteType];
+
+      if (!config) {
+        return;
+      }
+
+      const input = document.getElementById(config.inputId);
+
+      if (!input) {
+        return;
+      }
+
+      const text = input.value.trim();
+
+      if (!text) {
+        const statusElement = document.getElementById(config.statusId);
+        if (statusElement) {
+          statusElement.textContent = `Write a ${noteType} note before saving.`;
+        }
+        return;
+      }
+
+      const existingNotes = readPlotNotes(activePlotKey, noteType);
+      const nextNotes = [
+        {
+          text,
+          timestamp: new Date().toISOString()
+        },
+        ...existingNotes
+      ];
+
+      writePlotNotes(activePlotKey, noteType, nextNotes);
+      input.value = "";
+      renderNoteHistory(activePlotKey, noteType);
+    });
+  });
+}
+
+if (noteToggleButtons.length > 0) {
+  noteToggleButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const noteType = button.dataset.noteToggle;
+      const config = noteTypeConfig[noteType];
+
+      if (!config) {
+        return;
+      }
+
+      const historyElement = document.getElementById(config.historyId);
+
+      if (!historyElement) {
+        return;
+      }
+
+      const willShow = historyElement.classList.contains("hidden");
+      historyElement.classList.toggle("hidden", !willShow);
+      button.setAttribute("aria-expanded", String(willShow));
+      button.textContent = willShow ? "Hide history" : "Show history";
+
+      if (willShow) {
+        renderNoteHistory(activePlotKey, noteType);
+      }
+    });
+  });
+}
+
+renderAllNoteHistories(activePlotKey);
