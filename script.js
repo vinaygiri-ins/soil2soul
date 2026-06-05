@@ -146,6 +146,11 @@ const plotContent = {
 const plotOrder = ["D", "A", "C", "B"];
 let activePlotKey = "D";
 let activeProject = null;
+const defaultVillageContext = {
+  village: "Rangpur, Bulandshahr, Uttar Pradesh",
+  latitude: "28.33036",
+  longitude: "77.97588"
+};
 const noteTypeConfig = {
   soil: {
     inputId: "soilNoteInput",
@@ -244,11 +249,11 @@ function updateProjectHeadingUi() {
   }
 
   if (projectLatitudeInput) {
-    projectLatitudeInput.value = activeProject?.latitude || "";
+    projectLatitudeInput.value = activeProject?.latitude || defaultVillageContext.latitude;
   }
 
   if (projectLongitudeInput) {
-    projectLongitudeInput.value = activeProject?.longitude || "";
+    projectLongitudeInput.value = activeProject?.longitude || defaultVillageContext.longitude;
   }
 
   if (projectPlotPill) {
@@ -269,10 +274,10 @@ function updateProjectHeadingUi() {
       activeProjectIntent.textContent = activeProject.intention || "Not set yet";
     }
     if (activeProjectLatitude) {
-      activeProjectLatitude.textContent = activeProject.latitude || "Not set yet";
+      activeProjectLatitude.textContent = activeProject.latitude || defaultVillageContext.latitude;
     }
     if (activeProjectLongitude) {
-      activeProjectLongitude.textContent = activeProject.longitude || "Not set yet";
+      activeProjectLongitude.textContent = activeProject.longitude || defaultVillageContext.longitude;
     }
     return;
   }
@@ -281,7 +286,7 @@ function updateProjectHeadingUi() {
     activeProjectTitle.textContent = "No active project yet";
   }
   if (activeProjectSummary) {
-    activeProjectSummary.textContent = `Set one project name for ${plotContent[activePlotKey].title} so the soil, crop, and produce sections all stay under the same project heading.`;
+    activeProjectSummary.textContent = `Set one project name for ${plotContent[activePlotKey].title} so the soil, crop, and produce sections stay under the same project heading. The village context is currently set to ${defaultVillageContext.village} for future AI weather and local-condition analysis.`;
   }
   if (projectKeyPill) {
     projectKeyPill.textContent = "Project key pending";
@@ -290,10 +295,10 @@ function updateProjectHeadingUi() {
     activeProjectIntent.textContent = "Not set yet";
   }
   if (activeProjectLatitude) {
-    activeProjectLatitude.textContent = "Not set yet";
+    activeProjectLatitude.textContent = defaultVillageContext.latitude;
   }
   if (activeProjectLongitude) {
-    activeProjectLongitude.textContent = "Not set yet";
+    activeProjectLongitude.textContent = defaultVillageContext.longitude;
   }
 }
 
@@ -627,8 +632,8 @@ if (saveProjectNameButton) {
   saveProjectNameButton.addEventListener("click", () => {
     const projectName = projectNameInput?.value.trim() || "";
     const projectIntention = projectIntentInput?.value.trim() || "";
-    const projectLatitude = projectLatitudeInput?.value.trim() || "";
-    const projectLongitude = projectLongitudeInput?.value.trim() || "";
+    const projectLatitude = projectLatitudeInput?.value.trim() || defaultVillageContext.latitude;
+    const projectLongitude = projectLongitudeInput?.value.trim() || defaultVillageContext.longitude;
     const activeProjectSummary = document.getElementById("activeProjectSummary");
 
     if (!projectName) {
