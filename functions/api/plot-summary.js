@@ -13,15 +13,15 @@ export async function onRequestPost(context) {
       );
     }
 
-    const apiKey = context.env.OPENAI_API_KEY;
-    const model = context.env.OPENAI_MODEL || "gpt-5.4-mini";
+    const providerConfig = getProviderConfig(context.env);
+    const { apiKey, model, baseUrl, providerLabel } = providerConfig;
 
     if (!apiKey) {
       if (task === "action-plan") {
         return json({
           ok: false,
           mode: "fallback",
-          error: "OPENAI_API_KEY is not configured in Cloudflare Pages environment variables.",
+          error: `${providerLabel} API key is not configured in Cloudflare Pages environment variables.`,
           plan: null
         });
       }
@@ -29,8 +29,8 @@ export async function onRequestPost(context) {
       return json({
         ok: false,
         mode: "fallback",
-        error: "OPENAI_API_KEY is not configured in Cloudflare Pages environment variables.",
-        summary: `${plot.aiSummary} This is still the local fallback because the OpenAI API key has not been added in deployment settings yet.`
+        error: `${providerLabel} API key is not configured in Cloudflare Pages environment variables.`,
+        summary: `${plot.aiSummary} This is still the local fallback because the ${providerLabel} API key has not been added in deployment settings yet.`
       });
     }
 
@@ -57,7 +57,7 @@ export async function onRequestPost(context) {
         `Latest produce notes: ${stringifyNotes(project?.notes?.produce)}`
       ].join("\n");
 
-      const actionResponse = await fetch("https://api.openai.com/v1/responses", {
+      const actionResponse = await fetch(`${baseUrl}/responses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export async function onRequestPost(context) {
         return json({
           ok: false,
           mode: "fallback",
-          error: `OpenAI request failed: ${errorText}`,
+          error: `${providerLabel} request failed: ${errorText}`,
           plan: null
         });
       }
@@ -92,14 +92,14 @@ export async function onRequestPost(context) {
         const parsedPlan = JSON.parse(outputText);
         return json({
           ok: true,
-          mode: "openai",
+          mode: providerConfig.mode,
           plan: normalizePlan(parsedPlan)
         });
       } catch {
         return json({
           ok: false,
           mode: "fallback",
-          error: "OpenAI returned action text that could not be parsed as JSON.",
+          error: `${providerLabel} returned action text that could not be parsed as JSON.`,
           plan: null
         });
       }
@@ -120,7 +120,7 @@ export async function onRequestPost(context) {
       `Current snapshot: ${plot.current}`
     ].join("\n");
 
-    const response = await fetch("https://api.openai.com/v1/responses", {
+    const response = await fetch(`${baseUrl}/responses`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -143,8 +143,8 @@ export async function onRequestPost(context) {
       return json({
         ok: false,
         mode: "fallback",
-        error: `OpenAI request failed: ${errorText}`,
-        summary: `${plot.aiSummary} This is the local fallback because the OpenAI request did not complete successfully.`
+        error: `${providerLabel} request failed: ${errorText}`,
+        summary: `${plot.aiSummary} This is the local fallback because the ${providerLabel} request did not complete successfully.`
       });
     }
 
@@ -155,7 +155,7 @@ export async function onRequestPost(context) {
 
     return json({
       ok: true,
-      mode: "openai",
+      mode: providerConfig.mode,
       summary
     });
   } catch (error) {
@@ -176,6 +176,28 @@ function json(payload, status = 200) {
       "Cache-Control": "no-store"
     }
   });
+}
+
+function getProviderConfig(env) {
+  const provider = String(env.AI_PROVIDER || "").trim().toLowerCase();
+
+  if (provider === "groq") {
+    return {
+      apiKey: env.GROQ_API_KEY,
+      model: env.GROQ_MODEL || "openai/gpt-oss-20b",
+      baseUrl: "https://api.groq.com/openai/v1",
+      providerLabel: "Groq",
+      mode: "groq"
+    };
+  }
+
+  return {
+    apiKey: env.OPENAI_API_KEY,
+    model: env.OPENAI_MODEL || "gpt-5.4-mini",
+    baseUrl: "https://api.openai.com/v1",
+    providerLabel: "OpenAI",
+    mode: "openai"
+  };
 }
 
 function stringifyNotes(notes) {

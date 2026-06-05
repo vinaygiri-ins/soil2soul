@@ -1,6 +1,6 @@
 # Soil to Soul AI Setup
 
-This project should use OpenAI in the cheapest safe way:
+This project should use AI in the cheapest safe way:
 
 1. Do not call AI on page load.
 2. Call AI only when the user clicks a button like `Generate Plot Insight`.
@@ -11,7 +11,7 @@ This project should use OpenAI in the cheapest safe way:
 
 1. Frontend sends selected plot key like `A`, `B`, `C`, or `D` to your backend.
 2. Backend reads the current plot data from your database.
-3. Backend sends a compact prompt to the OpenAI Responses API.
+3. Backend sends a compact prompt to the configured AI provider's Responses API.
 4. Backend stores the returned summary.
 5. Frontend displays the saved result.
 
@@ -28,15 +28,39 @@ Frontend button:
 Current behavior:
 
 1. Frontend sends the selected plot object to `/api/plot-summary`
-2. The Pages Function calls the OpenAI Responses API
-3. If `OPENAI_API_KEY` is missing or the request fails, it falls back to a local summary
+2. The Pages Function calls the configured provider's Responses API
+3. If the provider key is missing or the request fails, it falls back to a local summary
+
+## Test with Groq first
+
+Groq is the easiest free-tier style test option for this project because it supports an OpenAI-compatible API shape.
+
+In your Cloudflare Pages project settings, set:
+
+- `AI_PROVIDER=groq`
+- `GROQ_API_KEY`
+- `GROQ_MODEL=openai/gpt-oss-20b`
+
+Current Groq docs:
+
+- [Groq overview](https://console.groq.com/docs)
+- [Groq rate limits](https://console.groq.com/docs/rate-limits)
+
+With that setup, the same frontend buttons will start using Groq through the backend route.
 
 ## Cloudflare environment variables to add
 
-In your Cloudflare Pages project settings, add:
+For OpenAI production mode, add:
 
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL` with value `gpt-5.4-mini` (optional, but recommended)
+
+For provider switching, also add one of these:
+
+- `AI_PROVIDER=groq`
+- `AI_PROVIDER=openai`
+
+If `AI_PROVIDER` is not set, the code defaults to `openai`.
 
 ## Suggested prompt shape
 
@@ -94,6 +118,15 @@ User data idea:
 - Cache by plot.
 - Add a daily or manual limit in backend.
 - Log usage by plot.
+
+## Current provider logic
+
+The Pages Function now supports:
+
+- `OpenAI` via `OPENAI_API_KEY`
+- `Groq` via `GROQ_API_KEY`
+
+The provider is selected by `AI_PROVIDER`.
 
 ## Good first AI features
 
