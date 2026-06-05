@@ -1030,14 +1030,15 @@ p {
 
 .note-box-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   align-items: start;
 }
 
 .note-box-card {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 1rem 1.25rem;
   padding: 1rem;
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.78);
@@ -1091,6 +1092,7 @@ p {
 .note-history-panel {
   display: grid;
   gap: 0.65rem;
+  grid-column: 1 / -1;
 }
 
 .note-history-entry {
@@ -1261,9 +1263,7 @@ p {
   }
 
   .note-box-grid {
-    grid-template-columns: repeat(3, minmax(15rem, 1fr));
-    overflow-x: auto;
-    padding-bottom: 0.35rem;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1306,14 +1306,17 @@ p {
   }
 
   .note-box-grid {
-    grid-template-columns: repeat(3, minmax(16rem, 1fr));
-    overflow-x: auto;
+    grid-template-columns: 1fr;
   }
 
   .ai-ops-head,
   .ai-output-head,
   .note-box-head {
     flex-direction: column;
+  }
+
+  .note-box-card {
+    grid-template-columns: 1fr;
   }
 
   .land-overview {
